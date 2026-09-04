@@ -37,7 +37,7 @@ export default function PlatformExpertiseSection() {
               transition={{ duration: 0.4, delay: i * 0.08 }}
             >
               {p.logo_url ? (
-                <img src={p.logo_url} alt={p.name} className="h-10 w-auto object-contain" />
+                <img src={p.logo_url} alt={p.name} className="h-10 w-auto object-contain" loading="lazy" width="120" height="40" />
               ) : (
                 <span className="text-lg font-display font-bold text-foreground/80">{p.name}</span>
               )}

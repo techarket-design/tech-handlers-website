@@ -73,7 +73,7 @@ export default function Footer() {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <div className="flex items-center gap-2.5 mb-4">
-              <img src={logoUrl || logoImg} alt={siteName} className="h-9 w-auto" />
+              <img src={logoUrl || logoImg} alt={siteName} className="h-9 w-auto" loading="lazy" width="200" height="36" />
               <span className="font-display text-lg font-bold text-surface-white">{siteName}</span>
             </div>
             <p className="text-sm text-surface-white/40 leading-relaxed max-w-xs mb-4">{footerDesc}</p>
