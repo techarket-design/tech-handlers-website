@@ -1,0 +1,1 @@
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS credentials_url text DEFAULT '/TechHandlers_Credentials.pdf';

@@ -1,0 +1,24 @@
+# Tech Handlers
+
+> Delhi NCR–based digital marketing and web development agency offering SEO, performance marketing, social media, lead generation, and custom web development.
+
+Tech Handlers helps businesses in Delhi, Gurgaon, Noida, and beyond grow online through data-driven digital marketing and high-performance website development.
+
+## Pages
+
+- [Home](/): Agency overview, services, case studies, and contact.
+- [About](/about): Team, values, and approach.
+- [Blog](/blog): Articles on digital marketing, SEO, and web development.
+
+## Services
+
+- [Digital Marketing](/services/digital-marketing): SEO, social media, content, email automation.
+- [Performance Marketing](/services/performance-marketing): Paid ads on Google, Meta, LinkedIn.
+- [SEO](/services/seo): On-page, off-page, technical, and local SEO.
+- [Social Media Marketing](/services/social-media-marketing): Strategy, content, and community management.
+- [Web Development](/services/web-development): Custom websites, e-commerce, web apps.
+- [LinkedIn Automation](/services/linkedin-automation): B2B outreach and lead generation.
+
+## Optional
+
+- [Sitemap](/sitemap.xml): Full list of indexable URLs.

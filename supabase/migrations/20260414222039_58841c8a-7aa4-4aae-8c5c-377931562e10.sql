@@ -1,0 +1,1 @@
+ALTER TABLE public.lead_activities ADD COLUMN file_url text;
