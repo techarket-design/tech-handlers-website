@@ -56,7 +56,6 @@ import TrustBadgesAdmin from "./pages/admin/TrustBadges.tsx";
 import LegalPagesAdmin from "./pages/admin/LegalPagesAdmin.tsx";
 import AdminVideoShowcase from "./pages/admin/VideoShowcase.tsx";
 import FormSubmissions from "./pages/admin/FormSubmissions.tsx";
-import OAuthConsent from "./pages/OAuthConsent.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -114,7 +113,6 @@ const App = () => (
             <Route path="/refund-policy" element={<LegalPage />} />
             <Route path="/cookie-policy" element={<LegalPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
             <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="leads" element={<ViewLeads />} />

@@ -1,6 +1,6 @@
 # Tech Handlers — Self-Hosted API
 
-Express + PostgreSQL backend that replaces Lovable Cloud (Supabase) for `techhandlers.in`.
+Express + PostgreSQL backend that replaces Legacy Cloud (Supabase) for `techhandlers.in`.
 The React frontend stays the same; it talks to this API through a drop-in `supabase` shim
 (`migration/frontend-shim/client.ts`).
 
@@ -39,7 +39,7 @@ SQL
 
 ### 3. Run the migration
 
-On any machine that can reach the Lovable Cloud DB:
+On any machine that can reach the Legacy Cloud DB:
 
 ```bash
 export SUPABASE_DB_URL="postgres://postgres:<pwd>@db.<ref>.supabase.co:5432/postgres"

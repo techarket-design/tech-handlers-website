@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Export everything from the current Lovable Cloud (Supabase) project.
+# Export everything from the current Legacy Platform Cloud (Supabase) project.
 # Run this from a machine that has psql + curl installed.
 #
-# REQUIRED env vars (get from Lovable: Cloud → Settings):
+# REQUIRED env vars (get from Legacy Platform: Cloud → Settings):
 #   SUPABASE_DB_URL          postgres://postgres:<pwd>@db.<ref>.supabase.co:5432/postgres
 #   SUPABASE_URL             https://<ref>.supabase.co
 #   SUPABASE_SERVICE_ROLE_KEY  service_role JWT (NEVER commit)

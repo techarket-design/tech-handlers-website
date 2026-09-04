@@ -24,7 +24,7 @@ type PendingRecord = {
   meta?: Record<string, any>;
 };
 
-const DB_NAME = "lovable_uploads";
+const DB_NAME = "app_uploads";
 const STORE = "files";
 const META = "meta";
 
