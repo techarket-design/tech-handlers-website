@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedHeading } from "./motion/AnimationUtils";
 import { ChevronDown } from "lucide-react";
 import { useFaqs, useSiteSettings } from "@/hooks/useData";
-
+import { Helmet } from "react-helmet-async";
 const fallbackFaqs = [
   { question: "What makes us different from other agencies?", answer: "We're hyper-focused on revenue outcomes, not vanity metrics." },
   { question: "How quickly can I expect to see results?", answer: "SEO typically shows meaningful movement in 60-90 days. Performance marketing delivers qualified leads within the first 2 weeks." },
@@ -44,8 +44,26 @@ export default function FAQSection() {
   const faqs = dbFaqs?.length ? dbFaqs.map(f => ({ question: f.question, answer: f.answer })) : fallbackFaqs;
   const heading = (settings as any)?.faq_heading || "Questions We Get Asked a Lot";
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(faq => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer
+      }
+    }))
+  };
+
   return (
     <section className="section-stone py-20 lg:py-28">
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
+      </Helmet>
       <div className="container mx-auto px-4 lg:px-8">
         <div className="grid lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">

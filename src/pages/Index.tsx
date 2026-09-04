@@ -92,17 +92,30 @@ const Index = () => {
         title="Tech Handlers | Digital Marketing Agency in Delhi NCR & Gurgaon"
         description="Delhi NCR's results-driven digital marketing & web development agency. SEO, performance marketing, social media, and lead generation across Delhi, Gurgaon & Noida."
         canonical="https://techhandlers.in/"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "Tech Handlers",
-          url: "https://techhandlers.in/",
-          potentialAction: {
-            "@type": "SearchAction",
-            target: "https://techhandlers.in/blog?search={search_term_string}",
-            "query-input": "required name=search_term_string",
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Tech Handlers",
+            url: "https://techhandlers.in/",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: "https://techhandlers.in/blog?search={search_term_string}",
+              "query-input": "required name=search_term_string",
+            },
           },
-        }}
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Tech Handlers",
+            url: "https://techhandlers.in/",
+            logo: "https://techhandlers.in/og-image.png",
+            contactPoint: {
+              "@type": "ContactPoint",
+              contactType: "customer service"
+            }
+          }
+        ]}
       />
       <Header />
       <main>
