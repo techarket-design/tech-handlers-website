@@ -8,6 +8,7 @@
     "dev": "vite",
     "prebuild": "npx tsx scripts/generate-sitemap.ts",
     "build": "vite build",
+    "postbuild": "npx playwright install chromium && node scripts/prerender.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
