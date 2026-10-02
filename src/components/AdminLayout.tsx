@@ -44,6 +44,7 @@ const navItems: NavItem[] = [
   { title: "Reports", url: "/admin/billing/reports", icon: PieChart, module: "billing" },
   { title: "— Content —", url: "", icon: FileText, isLabel: true, module: "content" },
   { title: "Blog Posts", url: "/admin/blog", icon: FileText, module: "content" },
+  { title: "Gemini Blog Connection", url: "/admin/blog-connection", icon: Sparkles, module: "content" },
   { title: "Case Studies", url: "/admin/case-studies", icon: Trophy, module: "content" },
   { title: "Social Showcase", url: "/admin/social-posts", icon: Instagram, module: "content" },
   { title: "Video Showcase", url: "/admin/video-showcase", icon: Film, module: "content" },

@@ -36,3 +36,5 @@ Then open `http://127.0.0.1:4173`. The local preview renders live published Supa
 `npm run dev` starts Vite for day-to-day frontend work. It does not emulate Vercel's server-rendered routes or server lead API; use `npm run build` followed by `npm run preview` to inspect those locally.
 
 For server setup, Supabase migrations, publishing behavior and deployment checks, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+For the Gemini custom app that creates drafts and publishes approved blog posts, see [GEMINI-BLOG-PUBLISHER.md](./GEMINI-BLOG-PUBLISHER.md).

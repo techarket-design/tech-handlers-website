@@ -6,6 +6,8 @@ Object.assign(process.env, loadEnv("production", process.cwd(), ""));
 const { default: render } = await import("../api/render.mjs");
 const { default: sitemap } = await import("../api/sitemap.mjs");
 const { default: leads } = await import("../api/leads.mjs");
+const { default: mcp } = await import("../api/mcp.mjs");
+const { default: blogOAuth } = await import("../api/blog-oauth.mjs");
 const root = path.resolve("dist");
 const types = { ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon", ".pdf": "application/pdf", ".xml": "application/xml" };
 http.createServer(async (req, res) => {
@@ -15,6 +17,18 @@ http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://localhost");
     req.query = { path: url.pathname.slice(1) };
+    const publisherRoute = url.pathname === '/api/mcp' || url.pathname === '/api/blog-oauth' || url.pathname.startsWith('/.well-known/oauth-') || url.pathname === '/.well-known/openid-configuration';
+    if (publisherRoute) {
+      req.query = Object.fromEntries(url.searchParams);
+      if (url.pathname.startsWith('/.well-known/oauth-protected-resource')) req.query.action = 'resource';
+      if (['/.well-known/oauth-authorization-server','/.well-known/openid-configuration'].includes(url.pathname)) req.query.action = 'metadata';
+      if (req.method === 'POST') {
+        let body = '';
+        for await (const chunk of req) { body += chunk; if (body.length > 150000) return res.status(413).json({ error:'Request too large' }); }
+        req.body = body;
+      }
+      return await (url.pathname === '/api/mcp' ? mcp : blogOAuth)(req,res);
+    }
     if (/^\/sitemap(?:-(?:pages|(?:blog|projects|locations)-\d+))?\.xml$/.test(url.pathname) || url.pathname === '/feed.xml') return await sitemap(req, res);
     if (url.pathname === "/api/leads") {
       let body = "";

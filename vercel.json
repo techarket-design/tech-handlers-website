@@ -15,6 +15,14 @@
   },
   "routes": [
     {
+      "src": "/.well-known/oauth-protected-resource(?:/api/mcp)?",
+      "dest": "/api/blog-oauth?action=resource"
+    },
+    {
+      "src": "/.well-known/(?:oauth-authorization-server|openid-configuration)",
+      "dest": "/api/blog-oauth?action=metadata"
+    },
+    {
       "src": "/indexnow-key.txt",
       "dest": "/api/indexnow-key"
     },

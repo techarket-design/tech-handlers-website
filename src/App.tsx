@@ -27,6 +27,7 @@ import CaseStudies from "./pages/CaseStudies.tsx";
 import CaseStudyDetail from "./pages/CaseStudyDetail.tsx";
 const AdminLayout = lazy(() => import("./components/AdminLayout.tsx"));
 const AdminLogin = lazy(() => import("./pages/admin/Login.tsx"));
+const BlogConnection = lazy(() => import("./pages/admin/BlogConnection.tsx"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard.tsx"));
 const ViewLeads = lazy(() => import("./pages/admin/ViewLeads.tsx"));
 const BlogPosts = lazy(() => import("./pages/admin/BlogPosts.tsx"));
@@ -106,6 +107,7 @@ const App = ({ serverUrl, queryClient }: { serverUrl?: string; queryClient: Quer
             <Route path="/refund-policy" element={<LegalPage />} />
             <Route path="/cookie-policy" element={<LegalPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/blog-connection" element={<BlogConnection />} />
             <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="leads" element={<ViewLeads />} />
