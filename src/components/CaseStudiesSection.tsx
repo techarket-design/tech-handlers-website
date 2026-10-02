@@ -54,9 +54,9 @@ export default function CaseStudiesSection() {
   const subheading = (settings as any)?.case_studies_subheading || "A look at some projects we've worked on recently";
 
   return (
-    <section className="section-white py-20 lg:py-28 relative overflow-hidden">
+    <section id="case-studies" className="section-white py-20 lg:py-28 relative overflow-hidden scroll-mt-20">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <motion.span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4"
             initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             Case Studies
@@ -68,17 +68,23 @@ export default function CaseStudiesSection() {
           </motion.p>
         </div>
 
-        <div className="space-y-6">
+        <div className="case-study-gallery grid md:grid-cols-2 xl:grid-cols-3 gap-6">
           {cases.map((c: any, i: number) => {
             const IconComp = iconList[i % iconList.length];
             const card = (
               <motion.div key={i} initial={false} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
-                <motion.div className="bg-surface-white rounded-2xl border border-border/70 p-6 lg:p-8 group cursor-pointer"
+                <motion.div className="case-study-card bg-surface-white rounded-2xl border border-border/70 overflow-hidden group h-full"
                   whileHover={{ y: -3, boxShadow: "0 20px 60px -15px hsl(239 84% 67% / 0.08)" }}
                   transition={{ type: "spring", stiffness: 300, damping: 25 }}>
-                  <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-start">
+                  <div className="case-study-image">
+                    <img src={c.hero_image_url || "/images/project-preview.svg"} alt={c.hero_image_url ? `${c.title} project preview` : "Illustrated website design concept"} width="1000" height="700" loading="lazy" decoding="async" onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = "/images/project-preview.svg"; }} />
+                    <span className="case-study-category">{c.category || "Digital experience"}</span>
+                    {!c.hero_image_url && <span className="case-study-concept">Illustrative preview</span>}
+                    {c.slug && <span className="case-study-arrow"><ArrowRight className="h-5 w-5" /></span>}
+                  </div>
+                  <div className="p-6 flex flex-col gap-5">
                     <div>
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-xl bg-primary/[0.07] flex items-center justify-center text-primary">
@@ -99,9 +105,9 @@ export default function CaseStudiesSection() {
                       )}
                     </div>
                     {c.results?.length > 0 && (
-                      <div className="grid grid-cols-3 gap-4 lg:gap-6">
+                      <div className="case-study-results grid grid-cols-3 gap-2">
                         {c.results.map((r: any, j: number) => (
-                          <motion.div key={j} className="text-center min-w-[80px]"
+                          <motion.div key={j} className="text-center min-w-0"
                             initial={false} whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }} transition={{ delay: i * 0.1 + j * 0.1 + 0.3 }}>
                             <p className="text-xl lg:text-2xl font-display font-bold text-lead">{r.value}</p>
@@ -115,7 +121,7 @@ export default function CaseStudiesSection() {
                 </motion.div>
               </motion.div>
             );
-            return c.slug ? <Link key={i} to={`/case-studies/${c.slug}`}>{card}</Link> : card;
+            return c.slug ? <Link className="block h-full" key={i} to={`/case-studies/${c.slug}`}>{card}</Link> : card;
           })}
         </div>
         <div className="text-center mt-10">

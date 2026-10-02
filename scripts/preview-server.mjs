@@ -15,7 +15,7 @@ http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://localhost");
     req.query = { path: url.pathname.slice(1) };
-    if (url.pathname === "/sitemap.xml") return await sitemap(req, res);
+    if (/^\/sitemap(?:-(?:pages|(?:blog|projects|locations)-\d+))?\.xml$/.test(url.pathname) || url.pathname === '/feed.xml') return await sitemap(req, res);
     if (url.pathname === "/api/leads") {
       let body = "";
       for await (const chunk of req) { body += chunk; if (body.length > 16000) return res.status(413).json({ error: "Submission too long" }); }

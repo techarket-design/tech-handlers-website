@@ -15,6 +15,7 @@ const MetricsSection = lazy(() => import("@/components/MetricsSection"));
 const ServicesSection = lazy(() => import("@/components/ServicesSection"));
 const ProcessSection = lazy(() => import("@/components/ProcessSection"));
 const CaseStudiesSection = lazy(() => import("@/components/CaseStudiesSection"));
+const CapabilitiesExperience = lazy(() => import("@/components/CapabilitiesExperience"));
 
 const PlatformExpertiseSection = lazy(() => import("@/components/PlatformExpertiseSection"));
 const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
@@ -29,6 +30,7 @@ import StickyConversionBar from "@/components/StickyConversionBar";
 
 const SECTION_MAP: Record<string, React.ComponentType> = {
   hero: HeroSection,
+  capabilities: CapabilitiesExperience,
   metrics: MetricsSection,
   services: ServicesSection,
   process: ProcessSection,
@@ -46,8 +48,8 @@ const SECTION_MAP: Record<string, React.ComponentType> = {
 };
 
 const DEFAULT_ORDER = [
-  "hero", "video_showcase", "trust_badges", "metrics", "services", "process",
-  "case_studies", "testimonials", "why_us", "cta", "social_showcase", "platform_expertise", "faq", "contact",
+  "hero", "capabilities", "social_showcase", "case_studies", "trust_badges", "services", "metrics", "video_showcase", "process",
+  "testimonials", "why_us", "cta", "platform_expertise", "faq", "contact",
 ];
 
 function SectionFallback() {
@@ -84,7 +86,12 @@ const Index = () => {
         merged.push({ key: r.section_key, visible: r.is_visible, sort_order: r.sort_order });
       }
     });
-    return merged.sort((a, b) => a.sort_order - b.sort_order);
+    // Keep the requested opening even when the CMS retains its previous order.
+    const opening = ["hero", "capabilities", "social_showcase", "case_studies"];
+    return [
+      ...opening.map(key => merged.find(section => section.key === key)!).filter(Boolean),
+      ...merged.filter(section => !opening.includes(section.key)).sort((a, b) => a.sort_order - b.sort_order),
+    ];
   }, [dbSections]);
 
   return (

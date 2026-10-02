@@ -58,3 +58,6 @@ For GTM, add a Custom Event trigger named `generate_lead`, connect it to a GA4 e
 Production client + server build, TypeScript, focused server tests, live read-only published-content rendering checks, desktop/mobile hydration checks, and a temporary local PostgreSQL-compatible integration test for the lead migration. No real lead was submitted and no production database write was made. Complete the deployed publishing and real email/GA4 checks above after credentials and a Preview deployment are available.
 
 The repository's locked dependencies have existing advisories reported by `npm audit`; this change does not perform a broad dependency upgrade. Handle those separately with an upgrade and regression review before treating the whole application as production-hardened.
+# Search and AI discovery
+
+After deploying, follow [DISCOVERABILITY.md](./DISCOVERABILITY.md) to submit the new sitemap index to webmaster tools and configure secure Supabase publication webhooks for IndexNow. The new sitemap and feed work without webhook keys; IndexNow notifications require the server environment settings and deployed domain. Accepted notifications do not guarantee indexing.

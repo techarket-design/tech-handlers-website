@@ -28,7 +28,8 @@ export default function SEOHead({
     <Helmet>
       {title && <title>{title}</title>}
       {description && <meta name="description" content={description} />}
-      <meta name="robots" content={noindex ? "noindex, follow" : "index, follow"} />
+      <meta name="robots" content={noindex ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
+      <link rel="alternate" type="application/rss+xml" title="Tech Handlers Insights" href="https://www.techhandlers.in/feed.xml" />
       {canonical && <link rel="canonical" href={canonical} />}
       {title && <meta property="og:title" content={title} />}
       {description && <meta property="og:description" content={description} />}

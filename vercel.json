@@ -15,6 +15,10 @@
   },
   "routes": [
     {
+      "src": "/indexnow-key.txt",
+      "dest": "/api/indexnow-key"
+    },
+    {
       "src": "/privacy/?",
       "status": 308,
       "headers": {
@@ -36,8 +40,8 @@
       }
     },
     {
-      "src": "/sitemap.xml",
-      "dest": "/api/sitemap"
+      "src": "/((?:sitemap(?:-(?:pages|(?:blog|projects|locations)-[0-9]+))?|feed)\\.xml)",
+      "dest": "/api/sitemap?path=$1"
     },
     {
       "src": "/admin(?:/.*)?",

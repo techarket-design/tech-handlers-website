@@ -1,7 +1,8 @@
 User-agent: *
 Allow: /
-Disallow: /admin/
-Disallow: /oauth/
+Disallow: /admin
+Disallow: /oauth
+Disallow: /api/
 
 # Tell bots where the sitemap is
 Sitemap: https://www.techhandlers.in/sitemap.xml
