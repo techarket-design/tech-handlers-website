@@ -18,7 +18,7 @@ export default function TrustMarquee() {
 
       <motion.p
         className="text-center text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em] mb-5"
-        initial={{ opacity: 0 }}
+        initial={false}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
       >

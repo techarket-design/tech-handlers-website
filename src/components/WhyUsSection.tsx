@@ -42,11 +42,11 @@ export default function WhyUsSection() {
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="text-center mb-16">
           <motion.span className="inline-block text-xs font-bold text-accent uppercase tracking-[0.2em] mb-4"
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             Why Choose Us
           </motion.span>
           <AnimatedHeading as="h2" text={heading} className="text-3xl lg:text-5xl font-display font-bold mb-4" />
-          <motion.p className="text-surface-white/50 max-w-lg mx-auto" initial={{ opacity: 0 }}
+          <motion.p className="text-surface-white/50 max-w-lg mx-auto" initial={false}
             whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
             {subheading}
           </motion.p>
@@ -56,7 +56,7 @@ export default function WhyUsSection() {
           {reasons.map((r: any, i: number) => {
             const IconComp = iconMap[r.icon_name || "TrendingUp"] || TrendingUp;
             return (
-              <motion.div key={r.id || i} initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }}
+              <motion.div key={r.id || i} initial={false} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
                 <motion.div className="rounded-2xl p-6 lg:p-7 border border-surface-white/[0.06] bg-surface-white/[0.03] backdrop-blur-sm h-full group relative overflow-hidden"
                   whileHover={{ y: -4, borderColor: "hsl(239 84% 67% / 0.15)", backgroundColor: "hsl(0 0% 100% / 0.05)" }}

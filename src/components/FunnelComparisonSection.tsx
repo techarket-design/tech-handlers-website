@@ -26,7 +26,7 @@ export default function FunnelComparisonSection() {
         {/* Heading */}
         <motion.div
           className="text-center max-w-4xl mx-auto mb-12 lg:mb-16"
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
@@ -48,7 +48,7 @@ export default function FunnelComparisonSection() {
         {/* Funnel graphic */}
         <motion.div
           className="max-w-3xl mx-auto mb-10 lg:mb-14"
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={false}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.15 }}
@@ -65,7 +65,7 @@ export default function FunnelComparisonSection() {
         <div className="grid md:grid-cols-2 gap-8 lg:gap-16 max-w-4xl mx-auto">
           <motion.div
             className="text-center md:text-left"
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.25 }}
@@ -76,7 +76,7 @@ export default function FunnelComparisonSection() {
 
           <motion.div
             className="text-center md:text-left"
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.35 }}
@@ -89,7 +89,7 @@ export default function FunnelComparisonSection() {
         {/* Trust strip */}
         <motion.div
           className="flex items-center justify-center gap-4 mt-12"
-          initial={{ opacity: 0, y: 10 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}

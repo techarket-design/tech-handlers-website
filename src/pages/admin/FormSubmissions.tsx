@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import LeadDeliveryMonitor from "@/components/admin/LeadDeliveryMonitor";
+import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -17,12 +19,13 @@ const statusColors: Record<string, string> = {
 };
 
 export default function FormSubmissions() {
+  const { isAdmin } = useAuth();
   const { data: leads = [], isLoading } = useAdminLeads();
   const [search, setSearch] = useState("");
 
   const submissions = useMemo(() => {
     const rows = (leads as any[]).filter(
-      (l) => (l.source ?? "website") === "website" && !l.is_archived
+      (l) => ["website", "hero_form", "contact_form", "service_form", "city_page_form"].includes(l.source ?? "website") && !l.is_archived
     );
     const q = search.trim().toLowerCase();
     const filtered = q
@@ -85,6 +88,7 @@ export default function FormSubmissions() {
         </div>
       </div>
 
+      {isAdmin && <LeadDeliveryMonitor />}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard label="Total" value={submissions.length} />
         <StatCard
@@ -127,7 +131,7 @@ export default function FormSubmissions() {
                 <TableHead>Name</TableHead>
                 <TableHead>Contact</TableHead>
                 <TableHead>Service</TableHead>
-                <TableHead>Message</TableHead>
+                <TableHead>Attribution</TableHead><TableHead>Message</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
@@ -154,6 +158,7 @@ export default function FormSubmissions() {
                     </div>
                   </TableCell>
                   <TableCell className="text-xs">{l.service_interest || "—"}</TableCell>
+                  <TableCell className="text-xs">{l.attribution?.first_touch?.utm_source || l.attribution?.first_touch?.referrer_origin || "Direct / unavailable"}<br />{l.attribution?.submission_path || l.source}</TableCell>
                   <TableCell className="max-w-sm">
                     <p className="text-xs text-muted-foreground line-clamp-2">{l.message || "—"}</p>
                   </TableCell>

@@ -96,7 +96,7 @@ export default function Header() {
               </motion.button>
 
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
+                initial={false}
                 animate={servicesOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
                 transition={{ duration: 0.2 }}
                 className={`absolute top-full left-1/2 -translate-x-1/2 pt-2 ${servicesOpen ? "pointer-events-auto" : "pointer-events-none"}`}
@@ -131,7 +131,7 @@ export default function Header() {
                 <motion.span
                   className="absolute bottom-0 left-0 right-0 h-0.5 gradient-primary-accent rounded-full"
                   variants={{ hover: { scaleX: 1, opacity: 1 } }}
-                  initial={{ scaleX: 0, opacity: 0 }}
+                  initial={false}
                   transition={{ duration: 0.3 }}
                   style={{ transformOrigin: "left" }}
                 />
@@ -177,7 +177,7 @@ export default function Header() {
                 className={`block w-full text-left py-2.5 text-sm font-medium border-b border-border/50 last:border-0 ${
                   location.pathname === link.href ? "text-primary" : "text-muted-foreground hover:text-lead"
                 }`}
-                initial={{ opacity: 0, x: -20 }}
+                initial={false}
                 animate={mobileOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                 transition={{ delay: i * 0.04 + 0.1 }}
               >
@@ -192,7 +192,7 @@ export default function Header() {
                 key={link.label}
                 onClick={() => handleNav(link)}
                 className="block w-full text-left py-2.5 text-sm font-medium text-muted-foreground hover:text-lead"
-                initial={{ opacity: 0, x: -20 }}
+                initial={false}
                 animate={mobileOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                 transition={{ delay: (serviceLinks.length + i) * 0.04 + 0.1 }}
               >

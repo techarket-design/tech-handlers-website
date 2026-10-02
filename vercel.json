@@ -1,8 +1,68 @@
 {
-  "rewrites": [
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/render.mjs": {
+      "includeFiles": "dist-server/**",
+      "maxDuration": 30
+    },
+    "api/leads.mjs": {
+      "maxDuration": 60
+    },
+    "api/lead-notifications.mjs": {
+      "maxDuration": 60
+    }
+  },
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/privacy/?",
+      "status": 308,
+      "headers": {
+        "Location": "/privacy-policy"
+      }
+    },
+    {
+      "src": "/terms/?",
+      "status": 308,
+      "headers": {
+        "Location": "/terms-of-service"
+      }
+    },
+    {
+      "src": "/cookies/?",
+      "status": 308,
+      "headers": {
+        "Location": "/cookie-policy"
+      }
+    },
+    {
+      "src": "/sitemap.xml",
+      "dest": "/api/sitemap"
+    },
+    {
+      "src": "/admin(?:/.*)?",
+      "dest": "/index.html",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow",
+        "Cache-Control": "no-store"
+      }
+    },
+    {
+      "src": "/",
+      "dest": "/api/render?path="
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/render?path=$1"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/lead-notifications",
+      "schedule": "0 4 * * *"
     }
   ]
 }

@@ -1,4 +1,5 @@
-import { useLayoutEffect, useRef, type ReactNode, type ElementType, type CSSProperties } from "react";
+import { useLowMotion } from "./MotionPolicy";
+import { useEffect, useRef, type ReactNode, type ElementType, type CSSProperties } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -38,12 +39,12 @@ export default function GsapReveal({
   stagger = 0.08,
   start = "top 85%",
   staggerChildren = false,
-  disableOnMobile = false,
+  disableOnMobile = true,
 }: GsapRevealProps) {
   const ref = useRef<HTMLElement | null>(null);
-  const isMobile = useIsMobile();
+  const isMobile = useLowMotion();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const el = ref.current;
     if (!el) return;
     if (disableOnMobile && isMobile) return;
@@ -51,7 +52,7 @@ export default function GsapReveal({
     const targets: Element[] = staggerChildren ? Array.from(el.children) : [el];
     if (targets.length === 0) return;
 
-    const from: gsap.TweenVars = { opacity: 0 };
+    const from: gsap.TweenVars = {};
     if (direction === "up") from.y = distance;
     if (direction === "down") from.y = -distance;
     if (direction === "left") from.x = -distance;

@@ -4,7 +4,7 @@
  * understand the content without guessing from the DOM.
  */
 
-export const SITE_URL = "https://techhandlers.in";
+export const SITE_URL = "https://www.techhandlers.in";
 export const SITE_NAME = "Tech Handlers";
 
 export const organizationSchema = {

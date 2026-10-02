@@ -18,7 +18,7 @@ export default function PlatformExpertiseSection() {
       <div className="container-wide">
         <motion.div
           className="text-center mb-14"
-          initial={{ opacity: 0, y: 24 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
@@ -31,7 +31,7 @@ export default function PlatformExpertiseSection() {
             <motion.div
               key={p.id || p.name}
               className="flex flex-col items-center justify-center gap-3 p-6 rounded-xl bg-surface-white/5 border border-border/30 hover:border-primary/40 transition-colors"
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.08 }}

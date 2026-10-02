@@ -166,6 +166,7 @@ export default function BlogPosts() {
     if (!editing.title || !editing.slug) return toast.error("Title and slug are required");
     if (!editing.excerpt) return toast.error("Excerpt is required for SEO");
     if (customSchemaError) return toast.error("Fix the custom schema JSON before saving");
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(editing.slug) || editing.slug.length > 180) return toast.error("Use a short lowercase slug with words separated by hyphens");
     const payload = { ...editing };
     if (!payload.meta_title) payload.meta_title = payload.title;
     if (!payload.meta_description) payload.meta_description = payload.excerpt;
@@ -174,7 +175,7 @@ export default function BlogPosts() {
     payload.reading_time_minutes = readingTime(payload.content || "");
     if (payload.is_published && !payload.published_at) payload.published_at = new Date().toISOString();
     await upsert.mutateAsync(payload);
-    toast.success("Blog post saved");
+    toast.success("Blog post saved. Public pages refresh within 30 seconds.");
     clearBlogDraft();
     close();
   };
@@ -384,7 +385,7 @@ export default function BlogPosts() {
                 </div>
                 <div>
                   <Label>Canonical URL <span className="text-muted-foreground text-xs">(leave blank for default)</span></Label>
-                  <Input value={editing.canonical_url || ""} onChange={e => setEditing({ ...editing, canonical_url: e.target.value })} className="mt-1" placeholder={`https://techhandlers.in/blog/${editing.slug || "slug"}`} />
+                  <Input value={editing.canonical_url || ""} onChange={e => setEditing({ ...editing, canonical_url: e.target.value })} className="mt-1" placeholder={`https://www.techhandlers.in/blog/${editing.slug || "slug"}`} />
                 </div>
                 <div>
                   <Label>Social Share Image URL <span className="text-muted-foreground text-xs">(1200×630)</span></Label>

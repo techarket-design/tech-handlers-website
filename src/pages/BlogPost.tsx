@@ -5,14 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
-import { useBlogPosts } from "@/hooks/useData";
+import { useBlogPost, useBlogPosts } from "@/hooks/useData";
 import { articleSchema, breadcrumbSchema, faqSchema, howToSchema, countWords, readingTime } from "@/lib/seo/schema";
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const { data: posts, isLoading } = useBlogPosts();
+  const { data: posts } = useBlogPosts();
+  const { data: post, isLoading } = useBlogPost(slug);
 
-  const post = posts?.find(p => p.slug === slug && p.is_published);
+
 
   // Related posts: same category first, then recent
   const related = (posts || [])
@@ -52,7 +53,7 @@ export default function BlogPost() {
   if (!post) {
     return (
       <>
-        <Header />
+        <SEOHead title="Article not found | Tech Handlers" noindex /><Header />
         <main className="min-h-screen bg-background pt-24 pb-16 flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-foreground mb-2">Article Not Found</h1>
@@ -67,7 +68,7 @@ export default function BlogPost() {
 
   const publishedDate = post.published_at ? new Date(post.published_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : "";
   const p: any = post;
-  const canonical = p.canonical_url || `https://techhandlers.in/blog/${post.slug}`;
+  const canonical = p.canonical_url || `https://www.techhandlers.in/blog/${post.slug}`;
   const mins = p.reading_time_minutes || readingTime(post.content || "");
   const schemas = [
     articleSchema({
@@ -117,7 +118,7 @@ export default function BlogPost() {
             <span className="text-foreground truncate max-w-[200px]">{post.title}</span>
           </nav>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }}>
             {post.category && <Badge variant="secondary" className="mb-4">{post.category}</Badge>}
 
             <h1 className="text-3xl lg:text-4xl font-display font-bold text-foreground mb-4 leading-tight">

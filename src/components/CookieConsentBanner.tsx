@@ -9,8 +9,7 @@ export type ConsentChoice = "accepted" | "rejected" | null;
 
 export function getConsent(): ConsentChoice {
   if (typeof window === "undefined") return null;
-  const v = localStorage.getItem(KEY);
-  return v === "accepted" || v === "rejected" ? v : null;
+  try { const v = localStorage.getItem(KEY); return v === "accepted" || v === "rejected" ? v : null; } catch { return null; }
 }
 
 export function hasConsent(): boolean {

@@ -19,17 +19,17 @@ export default function CaseStudies() {
       <SEOHead
         title="Case Studies | Tech Handlers — Real Results, Real Brands"
         description="Explore Tech Handlers case studies — real campaigns, real metrics, and the playbooks behind digital growth for brands across India."
-        canonical="https://techhandlers.in/case-studies"
+        canonical="https://www.techhandlers.in/case-studies"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           name: "Tech Handlers Case Studies",
-          url: "https://techhandlers.in/case-studies",
-          isPartOf: { "@type": "WebSite", name: "Tech Handlers", url: "https://techhandlers.in" },
+          url: "https://www.techhandlers.in/case-studies",
+          isPartOf: { "@type": "WebSite", name: "Tech Handlers", url: "https://www.techhandlers.in" },
           hasPart: cases.slice(0, 20).map((c) => ({
             "@type": "CreativeWork",
             name: c.title,
-            url: `https://techhandlers.in/case-studies/${c.slug}`,
+            url: `https://www.techhandlers.in/case-studies/${c.slug}`,
             image: c.hero_image_url || c.image_url,
             about: c.industry || c.category,
           })),
@@ -38,7 +38,7 @@ export default function CaseStudies() {
       <Header />
       <main className="min-h-screen bg-background pt-24 pb-20">
         <div className="container mx-auto px-4 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12 max-w-3xl mx-auto">
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} className="text-center mb-12 max-w-3xl mx-auto">
             <span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4">Case Studies</span>
             <h1 className="text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">Real campaigns. Real numbers.</h1>
             <p className="text-muted-foreground text-lg">Deep dives into how we&rsquo;ve helped brands move metrics that matter.</p>
@@ -56,7 +56,7 @@ export default function CaseStudies() {
                 const Icon = ICONS[i % ICONS.length];
                 const heroImg = c.hero_image_url || c.image_url;
                 return (
-                  <motion.div key={c.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                  <motion.div key={c.id} initial={false} whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
                     transition={{ delay: i * 0.08, duration: 0.5 }}>
                     <Link to={`/case-studies/${c.slug}`} className="block group h-full">

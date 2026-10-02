@@ -39,7 +39,8 @@ export default function Footer() {
   if ((dbFooterLinks as any[])?.length) {
     (dbFooterLinks as any[]).forEach((link: any) => {
       if (!footerLinkGroups[link.category]) footerLinkGroups[link.category] = [];
-      footerLinkGroups[link.category].push({ label: link.label, url: link.url });
+      const legalAliases: Record<string, string> = { "/privacy": "/privacy-policy", "/terms": "/terms-of-service", "/cookies": "/cookie-policy" };
+      footerLinkGroups[link.category].push({ label: link.label, url: legalAliases[link.url] || link.url });
     });
   } else {
     footerLinkGroups["Company"] = [
@@ -62,7 +63,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <motion.div
           className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10 mb-12"
-          initial="hidden"
+          initial={false}
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           variants={{ visible: { transition: { staggerChildren: 0.08 } } }}

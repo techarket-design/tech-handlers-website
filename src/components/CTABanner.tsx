@@ -32,7 +32,7 @@ export default function CTABanner() {
     <section className="py-20 lg:py-28 relative overflow-hidden">
       <div className="container mx-auto px-4 lg:px-8">
         <motion.div className="relative rounded-3xl p-8 lg:p-16 text-center overflow-hidden bg-gradient-to-br from-[hsl(222_72%_14%)] via-[hsl(258_70%_22%)] to-[hsl(330_85%_38%)] shadow-[0_30px_80px_-30px_rgba(199,32,120,0.55)] ring-1 ring-white/10"
-          initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
+          initial={false} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
           <FloatingOrbs />
           <div className="absolute inset-0 pointer-events-none">
@@ -43,7 +43,7 @@ export default function CTABanner() {
 
           <div className="relative z-10">
             <motion.div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 rounded-full px-4 py-1.5 mb-6"
-              initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+              initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
               <Zap className="h-3.5 w-3.5 text-amber-300" />
               <span className="text-xs font-bold text-white tracking-wide uppercase">{badge}</span>
             </motion.div>
@@ -52,12 +52,12 @@ export default function CTABanner() {
               {heading}
             </h2>
             <motion.p className="text-white/85 max-w-lg mx-auto mb-8 text-base lg:text-lg"
-              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
+              initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
               {description}
             </motion.p>
 
             <motion.div className="flex flex-col sm:flex-row gap-4 justify-center"
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.5 }}>
+              initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.5 }}>
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
                 <Button size="lg" className="bg-amber-300 text-lead font-bold shadow-[0_10px_30px_-8px_rgba(252,211,77,0.6)] hover:bg-amber-200 transition-all text-base px-8 h-12"
                   onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
@@ -82,7 +82,7 @@ export default function CTABanner() {
             </motion.div>
 
             <motion.p className="text-white/70 text-xs mt-6"
-              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.7 }}>
+              initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.7 }}>
               {footerText}
             </motion.p>
           </div>

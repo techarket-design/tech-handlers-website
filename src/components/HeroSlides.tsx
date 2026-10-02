@@ -9,7 +9,7 @@ function RevenueGraphic() {
       {/* Floating metric cards */}
       <motion.div
         className="absolute top-6 right-6 bg-surface-white/90 backdrop-blur-xl rounded-xl px-4 py-3 shadow-lg border border-border/50"
-        initial={{ opacity: 0, y: -10 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, type: "spring" }}
       >
@@ -19,7 +19,7 @@ function RevenueGraphic() {
 
       <motion.div
         className="absolute top-6 left-6 bg-surface-white/90 backdrop-blur-xl rounded-xl px-4 py-3 shadow-lg border border-border/50"
-        initial={{ opacity: 0, y: -10 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, type: "spring" }}
       >
@@ -81,7 +81,7 @@ function SEORankingsGraphic() {
     <div className="relative w-full h-full flex flex-col justify-center px-6 py-8 gap-3">
       <motion.div
         className="absolute top-6 right-6 flex items-center gap-2 bg-success/10 text-success px-3 py-1.5 rounded-full"
-        initial={{ opacity: 0, scale: 0.8 }}
+        initial={false}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.3 }}
       >
@@ -93,7 +93,7 @@ function SEORankingsGraphic() {
         <motion.div
           key={i}
           className="bg-surface-white/80 backdrop-blur-sm rounded-xl border border-border/50 p-4 flex items-center justify-between group hover:shadow-lg transition-shadow"
-          initial={{ opacity: 0, x: 30 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 + i * 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
@@ -130,7 +130,7 @@ function LeadFunnelGraphic() {
     <div className="relative w-full h-full flex flex-col items-center justify-center px-8 py-10 gap-3">
       <motion.div
         className="absolute top-6 left-6 bg-surface-white/90 backdrop-blur-xl rounded-xl px-4 py-3 shadow-lg border border-border/50"
-        initial={{ opacity: 0, y: -10 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, type: "spring" }}
       >
@@ -142,7 +142,7 @@ function LeadFunnelGraphic() {
         <motion.div
           key={i}
           className="w-full flex items-center gap-3"
-          initial={{ opacity: 0, scaleX: 0 }}
+          initial={false}
           animate={{ opacity: 1, scaleX: 1 }}
           transition={{ delay: 0.2 + i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           style={{ transformOrigin: "left" }}
@@ -188,7 +188,7 @@ function DashboardGraphic() {
       {/* Live indicator */}
       <motion.div
         className="absolute top-6 right-6 flex items-center gap-2"
-        initial={{ opacity: 0 }}
+        initial={false}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
@@ -205,7 +205,7 @@ function DashboardGraphic() {
           <motion.div
             key={i}
             className="bg-surface-white/80 backdrop-blur-sm rounded-xl border border-border/50 p-4 group hover:shadow-lg hover:border-primary/20 transition-all"
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            initial={false}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.2 + i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
@@ -224,7 +224,7 @@ function DashboardGraphic() {
       {/* Mini sparkline */}
       <motion.div
         className="bg-surface-white/80 backdrop-blur-sm rounded-xl border border-border/50 p-4 mt-1"
-        initial={{ opacity: 0, y: 20 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
       >
@@ -247,7 +247,7 @@ function DashboardGraphic() {
             d="M 0 35 C 30 30, 50 25, 80 20 C 110 15, 130 28, 160 18 C 190 8, 220 22, 250 12 C 270 6, 290 10, 300 5 L 300 40 L 0 40 Z"
             fill="hsl(var(--primary))"
             opacity="0.06"
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 0.06 }}
             transition={{ delay: 1.5 }}
           />

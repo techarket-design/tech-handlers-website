@@ -29,15 +29,14 @@ export default function ContactSection() {
   const [company, setCompany] = useState("");
   const [website, setWebsite] = useState("");
   const [service, setService] = useState("");
-  const [budget, setBudget] = useState([200000]);
+  const [budget, setBudget] = useState("");
+  const [currency, setCurrency] = useState("USD");
+  const [market, setMarket] = useState("");
   const [message, setMessage] = useState("");
   const { data: settings } = useSiteSettings();
   const submitLead = useSubmitLead();
 
-  const budgetLabel = (v: number) => {
-    if (v >= 1000000) return `₹${(v / 100000).toFixed(0)}L+`;
-    return `₹${(v / 1000).toFixed(0)}k`;
-  };
+
 
   const contactHeading = (settings as any)?.contact_section_heading || "Let's Build Your Digital Presence";
   const formHeading = (settings as any)?.contact_form_heading || "Send Us Your Requirements";
@@ -72,15 +71,15 @@ export default function ContactSection() {
         company: company.trim() || null,
         website_url: website.trim() || null,
         service_interest: service || null,
-        budget: budgetLabel(budget[0]),
-        message: message.trim() || null,
+        budget: budget.trim() ? `${currency} ${budget.trim()}` : null,
+        message: [market.trim() && `Target market: ${market.trim()}`, message.trim()].filter(Boolean).join("\n") || null,
         source: "contact_form",
       });
       toast.success("Thanks! We'll reach out within 24 hours.");
       setName(""); setEmail(""); setPhone(""); setCompany("");
-      setWebsite(""); setService(""); setBudget([200000]); setMessage("");
+      setWebsite(""); setService(""); setBudget(""); setMarket(""); setMessage("");
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Unable to save your enquiry. Please try again or email us directly.");
     }
   };
 
@@ -98,15 +97,15 @@ export default function ContactSection() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           <div>
             <motion.span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4"
-              initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               Get In Touch
             </motion.span>
             <AnimatedHeading as="h2" text={contactHeading} className="text-3xl lg:text-4xl font-display font-bold text-lead mb-6" />
 
-            <motion.div className="space-y-4 mb-8" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
+            <motion.div className="space-y-4 mb-8" initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
               {contactItems.map((item, i) => (
                 <motion.div key={i} className="flex items-start gap-3 group"
-                  initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                  initial={false} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
                   transition={{ delay: 0.3 + i * 0.08 }}>
                   <div className="w-8 h-8 rounded-lg bg-primary/[0.06] flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
                     <item.icon className="h-3.5 w-3.5 text-primary" />
@@ -117,7 +116,7 @@ export default function ContactSection() {
             </motion.div>
 
             <motion.div className="relative bg-muted/50 rounded-2xl overflow-hidden border border-border/50 h-56 lg:h-72"
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
+              initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
               {mapsSrc ? (
                 <iframe
                   src={mapsSrc}
@@ -150,7 +149,7 @@ export default function ContactSection() {
             </motion.div>
           </div>
 
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          <motion.div initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}>
             <motion.div className="glass-card rounded-2xl p-6 lg:p-8 glow-primary"
               whileHover={{ boxShadow: "0 25px 80px -15px hsl(239 84% 67% / 0.15)" }} transition={{ duration: 0.4 }}>
@@ -197,14 +196,14 @@ export default function ContactSection() {
                   </div>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-lead">Monthly Marketing Budget</Label>
-                  <div className="mt-3 px-1">
-                    <Slider value={budget} onValueChange={setBudget} min={50000} max={1000000} step={50000} />
-                  </div>
-                  <div className="flex justify-between text-xs text-muted-foreground mt-2.5">
-                    <span>₹50k</span>
-                    <span className="font-bold text-primary text-sm">{budgetLabel(budget[0])}</span>
-                    <span>₹10L+</span>
+                  <Label htmlFor="c-market">Country / target market (optional)</Label>
+                  <Input id="c-market" value={market} onChange={e => setMarket(e.target.value)} maxLength={100} placeholder="Where are your customers?" className="mt-1.5" />
+                </div>
+                <div>
+                  <Label htmlFor="c-budget">Indicative project or monthly budget (optional)</Label>
+                  <div className="flex gap-2 mt-1.5">
+                    <select aria-label="Budget currency" value={currency} onChange={e => setCurrency(e.target.value)} className="rounded-md border border-input bg-background px-3">{["USD", "GBP", "EUR", "AUD", "CAD", "AED", "INR"].map(c => <option key={c}>{c}</option>)}</select>
+                    <Input id="c-budget" value={budget} onChange={e => setBudget(e.target.value)} maxLength={60} placeholder="e.g. 2,000 monthly, or scope first" />
                   </div>
                 </div>
                 <div>

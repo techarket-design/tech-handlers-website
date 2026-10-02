@@ -38,7 +38,7 @@ export default function TestimonialsSection() {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-center mb-14">
           <motion.span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4"
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             Client Stories
           </motion.span>
           <AnimatedHeading as="h2" text={heading} className="text-3xl lg:text-5xl font-display font-bold text-lead mb-4" />
@@ -46,7 +46,7 @@ export default function TestimonialsSection() {
 
         <div className="max-w-3xl mx-auto">
           <AnimatePresence mode="wait">
-            <motion.div key={current} initial={{ opacity: 0, y: 20, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+            <motion.div key={current} initial={false} animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.98 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
               <div className="glass-card rounded-2xl p-8 lg:p-12 relative">
                 <Quote className="h-8 w-8 text-primary/10 absolute top-6 left-6" />

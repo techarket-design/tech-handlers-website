@@ -12,14 +12,13 @@ interface SEOHeadProps {
 
 /**
  * Per-route SEO head powered by react-helmet-async.
- * Tags here override the sitewide defaults in index.html for JS-executing crawlers (Googlebot).
- * The static index.html still provides fallbacks for non-JS social crawlers (LinkedIn, Slack, FB).
+ * The Vercel renderer writes these tags into initial HTML and the client updates them on navigation.
  */
 export default function SEOHead({
   title,
   description,
   canonical,
-  ogImage,
+  ogImage = "https://www.techhandlers.in/og-image.png",
   ogType = "website",
   noindex,
   jsonLd,
@@ -29,7 +28,7 @@ export default function SEOHead({
     <Helmet>
       {title && <title>{title}</title>}
       {description && <meta name="description" content={description} />}
-      {noindex && <meta name="robots" content="noindex, nofollow" />}
+      <meta name="robots" content={noindex ? "noindex, follow" : "index, follow"} />
       {canonical && <link rel="canonical" href={canonical} />}
       {title && <meta property="og:title" content={title} />}
       {description && <meta property="og:description" content={description} />}
@@ -42,7 +41,7 @@ export default function SEOHead({
       <meta name="twitter:card" content="summary_large_image" />
       {schemas.map((schema, i) => (
         <script key={i} type="application/ld+json">
-          {JSON.stringify(schema)}
+          {JSON.stringify(schema).replace(/</g, "\\u003c")}
         </script>
       ))}
     </Helmet>

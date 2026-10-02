@@ -37,13 +37,13 @@ export default function ServiceCTA({ heading, description, buttonText, service }
   return (
     <section id="service-cta" className="py-20 lg:py-28 bg-foreground">
       <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
+        <motion.div initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
           <h2 className="text-3xl lg:text-4xl font-display font-bold text-background mb-4">{heading}</h2>
           <p className="text-background/60 max-w-xl mx-auto">{description}</p>
         </motion.div>
 
         {submitted ? (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12">
+          <motion.div initial={false} animate={{ opacity: 1, scale: 1 }} className="text-center py-12">
             <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
               <Send className="h-7 w-7 text-primary" />
             </div>
@@ -51,7 +51,7 @@ export default function ServiceCTA({ heading, description, buttonText, service }
             <p className="text-background/60">Our team will reach out within 24 hours with a custom strategy for your business.</p>
           </motion.div>
         ) : (
-          <motion.form onSubmit={handleSubmit} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          <motion.form onSubmit={handleSubmit} initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="bg-background/5 backdrop-blur-sm rounded-2xl border border-background/10 p-6 lg:p-8 max-w-2xl mx-auto">
             <div className="grid sm:grid-cols-2 gap-4 mb-4">
               <Input placeholder="Your Name *" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}

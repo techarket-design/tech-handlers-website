@@ -58,11 +58,11 @@ export default function CaseStudiesSection() {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-center mb-16">
           <motion.span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4"
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             Case Studies
           </motion.span>
           <AnimatedHeading as="h2" text={heading} className="text-3xl lg:text-5xl font-display font-bold text-lead mb-4" />
-          <motion.p className="text-muted-foreground max-w-lg mx-auto" initial={{ opacity: 0 }}
+          <motion.p className="text-muted-foreground max-w-lg mx-auto" initial={false}
             whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
             {subheading}
           </motion.p>
@@ -72,7 +72,7 @@ export default function CaseStudiesSection() {
           {cases.map((c: any, i: number) => {
             const IconComp = iconList[i % iconList.length];
             const card = (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+              <motion.div key={i} initial={false} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
                 <motion.div className="bg-surface-white rounded-2xl border border-border/70 p-6 lg:p-8 group cursor-pointer"
@@ -102,7 +102,7 @@ export default function CaseStudiesSection() {
                       <div className="grid grid-cols-3 gap-4 lg:gap-6">
                         {c.results.map((r: any, j: number) => (
                           <motion.div key={j} className="text-center min-w-[80px]"
-                            initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}
+                            initial={false} whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }} transition={{ delay: i * 0.1 + j * 0.1 + 0.3 }}>
                             <p className="text-xl lg:text-2xl font-display font-bold text-lead">{r.value}</p>
                             <p className="text-[10px] text-muted-foreground font-medium mt-0.5">{r.label}</p>

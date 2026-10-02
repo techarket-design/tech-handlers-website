@@ -39,7 +39,7 @@ export default function GrowthChart() {
             stroke="hsl(30 6% 88% / 0.5)"
             strokeWidth="0.5"
             strokeDasharray="4 4"
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           />
@@ -63,7 +63,7 @@ export default function GrowthChart() {
         <motion.path
           d={pathData + " L 400 190 L 30 190 Z"}
           fill="url(#areaGrad)"
-          initial={{ opacity: 0 }}
+          initial={false}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2, delay: 0.3 }}
         />
@@ -100,7 +100,7 @@ export default function GrowthChart() {
               fill={node.accent ? "hsl(293 69% 49%)" : "hsl(239 84% 67%)"}
               stroke="hsl(0 0% 100%)"
               strokeWidth="2.5"
-              initial={{ scale: 0, opacity: 0 }}
+              initial={false}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: node.delay, type: "spring", stiffness: 500, damping: 15 }}
             />
@@ -112,7 +112,7 @@ export default function GrowthChart() {
                 fill="none"
                 stroke="hsl(293 69% 49%)"
                 strokeWidth="1.5"
-                initial={{ scale: 1, opacity: 0.7 }}
+                initial={false}
                 animate={{ scale: 3, opacity: 0 }}
                 transition={{ repeat: Infinity, duration: 2, delay: 1.5, ease: "easeOut" }}
               />
@@ -122,7 +122,7 @@ export default function GrowthChart() {
               y={node.cy - 18}
               textAnchor="middle"
               className="fill-lead font-display text-[10px] font-bold"
-              initial={{ opacity: 0, y: 5 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: node.delay + 0.2, duration: 0.4 }}
             >

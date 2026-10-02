@@ -12,7 +12,7 @@ const fallbackFaqs = [
 function FAQItem({ faq, index }: { faq: { question: string; answer: string }; index: number }) {
   const [open, setOpen] = useState(false);
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+    <motion.div initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
       transition={{ delay: index * 0.06, duration: 0.5 }}>
       <motion.button onClick={() => setOpen(!open)}
         className="w-full flex items-start justify-between gap-4 py-5 text-left group"
@@ -26,7 +26,7 @@ function FAQItem({ faq, index }: { faq: { question: string; answer: string }; in
       </motion.button>
       <AnimatePresence>
         {open && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
+          <motion.div initial={false} animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }} className="overflow-hidden">
             <p className="text-sm text-muted-foreground leading-relaxed pb-5 pl-0 lg:pl-1">{faq.answer}</p>
           </motion.div>
@@ -68,11 +68,11 @@ export default function FAQSection() {
         <div className="grid lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">
             <motion.span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4"
-              initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               FAQs
             </motion.span>
             <AnimatedHeading as="h2" text={heading} className="text-3xl lg:text-4xl font-display font-bold text-lead mb-4" />
-            <motion.p className="text-muted-foreground text-sm" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+            <motion.p className="text-muted-foreground text-sm" initial={false} whileInView={{ opacity: 1 }}
               viewport={{ once: true }} transition={{ delay: 0.3 }}>
               Can't find what you're looking for? Reach out to our team directly.
             </motion.p>

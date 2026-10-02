@@ -1,3 +1,4 @@
+import { useLowMotion } from "./motion/MotionPolicy";
 import { useState, useRef, useMemo } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Send, ShieldCheck, Clock, Star } from "lucide-react";
@@ -11,9 +12,9 @@ import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const stats = [
-  "150+ BRANDS TRUST US",
-  "97% CLIENT RETENTION RATE",
-  "15% HIGHER LEAD GROWTH",
+  "DIGITAL GROWTH STRATEGY",
+  "CLEAR SCOPE & REPORTING",
+  "REMOTE COLLABORATION",
   "DIGITAL MARKETING EXPERTS",
   "WEB DEVELOPMENT PROS",
   "PERFORMANCE MARKETING",
@@ -34,15 +35,15 @@ function useShootingStars(count: number) {
   return useMemo(() =>
     Array.from({ length: count }, (_, i) => ({
       id: i,
-      startX: Math.random() * 100,
-      startY: Math.random() * 60,
-      angle: 25 + Math.random() * 30,
-      length: 60 + Math.random() * 120,
-      duration: 1.2 + Math.random() * 1.5,
-      delay: Math.random() * 12,
-      repeat: 6 + Math.random() * 10,
-      opacity: 0.15 + Math.random() * 0.25,
-      width: 1 + Math.random() * 1.5,
+      startX: ((i + 1) / (count + 1)) * 100,
+      startY: ((i + 1) / (count + 1)) * 60,
+      angle: 25 + 0.5 * 30,
+      length: 60 + 0.5 * 120,
+      duration: 1.2 + 0.5 * 1.5,
+      delay: 0.5 * 12,
+      repeat: 6 + 0.5 * 10,
+      opacity: 0.15 + 0.5 * 0.25,
+      width: 1 + 0.5 * 1.5,
     })),
   [count]);
 }
@@ -51,11 +52,11 @@ function useFloatingOrbs(count: number) {
   return useMemo(() =>
     Array.from({ length: count }, (_, i) => ({
       id: i,
-      x: 10 + Math.random() * 80,
-      y: 10 + Math.random() * 80,
-      size: 3 + Math.random() * 6,
-      duration: 4 + Math.random() * 6,
-      delay: Math.random() * 3,
+      x: 10 + 0.5 * 80,
+      y: 10 + 0.5 * 80,
+      size: 3 + 0.5 * 6,
+      duration: 4 + 0.5 * 6,
+      delay: 0.5 * 3,
       color: ["var(--primary)", "var(--accent)", "var(--success)"][i % 3],
     })),
   [count]);
@@ -63,7 +64,7 @@ function useFloatingOrbs(count: number) {
 
 export default function HeroSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
+  const isMobile = useLowMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
   const bgY = useTransform(scrollYProgress, [0, 1], [0, 80]);
@@ -147,7 +148,7 @@ export default function HeroSection() {
                 style={{ left: `${star.startX}%`, top: `${star.startY}%`, width: star.length, height: star.width,
                   background: `linear-gradient(90deg, transparent, hsl(var(--primary) / ${star.opacity}), transparent)`,
                   transformOrigin: "left center", rotate: `${star.angle}deg` }}
-                initial={{ opacity: 0, scaleX: 0, x: 0, y: 0 }}
+                initial={false}
                 animate={{ opacity: [0, star.opacity, star.opacity, 0], scaleX: [0, 1, 1, 0.5], x: [0, dx * 0.5, dx], y: [0, dy * 0.5, dy] }}
                 transition={{ duration: star.duration, delay: star.delay, repeat: Infinity, repeatDelay: star.repeat, ease: [0.22, 1, 0.36, 1] }} />
             );
@@ -156,7 +157,7 @@ export default function HeroSection() {
           {floatingOrbs.map((orb) => (
             <motion.div key={`orb-${orb.id}`} className="absolute rounded-full"
               style={{ left: `${orb.x}%`, top: `${orb.y}%`, width: orb.size, height: orb.size, background: `hsl(${orb.color})`, opacity: 0.12 }}
-              animate={{ y: [0, -20 - Math.random() * 15, 0], x: [0, 8 + Math.random() * 10, 0], opacity: [0.08, 0.2, 0.08], scale: [1, 1.3, 1] }}
+              animate={{ y: [0, -20 - 0.5 * 15, 0], x: [0, 8 + 0.5 * 10, 0], opacity: [0.08, 0.2, 0.08], scale: [1, 1.3, 1] }}
               transition={{ duration: orb.duration, delay: orb.delay, repeat: Infinity, ease: "easeInOut" }} />
           ))}
         </motion.div>
@@ -165,25 +166,25 @@ export default function HeroSection() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
               <motion.h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl font-display font-bold text-foreground leading-[1.08] mb-6 text-balance"
-                initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+                initial={false} animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
                 {title}
               </motion.h1>
 
               <motion.p className="text-lg lg:text-xl text-muted-foreground max-w-lg mb-8 leading-relaxed"
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.7 }}>
+                initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.7 }}>
                 {subtitle}
               </motion.p>
 
               {/* Inquiry Form */}
               <motion.form onSubmit={handleSubmit}
                 className="bg-card border border-border rounded-2xl p-5 space-y-4 max-w-lg shadow-lg"
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.6 }}>
+                initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.6 }}>
                 <h2 className="font-display font-semibold text-foreground text-lg">Get a Free Consultation</h2>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground -mt-2">
                   <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-primary" /> No spam, ever</span>
                   <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5 text-primary" /> Reply within 24h</span>
-                  <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 text-primary fill-primary" /> 4.9/5 rating</span>
+                  <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 text-primary fill-primary" /> India-based team</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Input placeholder="Your Name *" value={name} onChange={(e) => setName(e.target.value)} required className="h-11" />
@@ -216,7 +217,7 @@ export default function HeroSection() {
               </motion.form>
 
               {/* Trust strip */}
-              <motion.div className="flex items-center gap-4 mt-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>
+              <motion.div className="flex items-center gap-4 mt-6" initial={false} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>
                 <div className="flex -space-x-2">
                   {["TH", "DM", "PM", "WD"].map((initials, i) => (
                     <motion.div key={i}
@@ -229,13 +230,13 @@ export default function HeroSection() {
                   ))}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  <span className="text-foreground font-semibold">150+ brands</span> trust us
-                  <br />across India & worldwide
+                  <span className="text-foreground font-semibold">SEO, web & marketing brands</span> trust us
+                  <br />for ambitious businesses
                 </div>
               </motion.div>
             </div>
 
-            <motion.div initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+            <motion.div initial={false} animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}>
               <RevenueEngineGraphic siteName={siteName} />
             </motion.div>

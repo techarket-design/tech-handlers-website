@@ -71,7 +71,7 @@ export default function DigitalMarketing() {
       <SEOHead
         title="Digital Marketing Services | Tech Handlers"
         description="Comprehensive digital marketing services including SEO, social media, content marketing, email automation, and more. Data-driven strategies to grow your business online."
-        canonical="https://techhandlers.in/services/digital-marketing"
+        canonical="https://www.techhandlers.in/services/digital-marketing"
         jsonLd={servicePageSchemas({ name: "Digital Marketing Services", description: "Comprehensive digital marketing services including SEO, social media, content marketing, email automation, and more. Data-driven strategies to grow your business online.", path: "/services/digital-marketing" }, [faqJsonLd])}
       />
       <Header />
@@ -83,7 +83,7 @@ export default function DigitalMarketing() {
             <div className="absolute bottom-10 left-[5%] w-96 h-96 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, hsl(var(--accent) / 0.04), transparent 70%)" }} />
           </div>
           <div className="container mx-auto px-4 lg:px-8 relative z-10">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
+            <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
               <span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4">Digital Marketing</span>
               <h1 className="text-4xl lg:text-6xl font-display font-bold text-foreground leading-[1.08] mb-6">
                 Grow Your Brand with <span className="text-primary">Data-Driven</span> Digital Marketing
@@ -106,14 +106,14 @@ export default function DigitalMarketing() {
         {/* Services Grid */}
         <section className="py-20 lg:py-28 section-white">
           <div className="container mx-auto px-4 lg:px-8">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
+            <motion.div initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
               <h2 className="text-3xl lg:text-4xl font-display font-bold text-lead mb-4">Our Digital Marketing Services</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">End-to-end digital marketing solutions tailored for businesses that want measurable, sustainable growth.</p>
             </motion.div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((s, i) => (
                 <motion.div key={s.title} className="bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-shadow"
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                  initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                   <div className="w-12 h-12 rounded-xl bg-primary/[0.08] flex items-center justify-center mb-4">
                     <s.icon className="h-6 w-6 text-primary" />
                   </div>
@@ -131,7 +131,7 @@ export default function DigitalMarketing() {
             <h2 className="text-3xl lg:text-4xl font-display font-bold text-background text-center mb-12">Results That Speak</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {results.map((r, i) => (
-                <motion.div key={i} className="text-center" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                <motion.div key={i} className="text-center" initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
                   <p className="text-4xl lg:text-5xl font-display font-bold text-primary mb-2">{r.metric}</p>
                   <p className="text-sm text-background/60">{r.label}</p>
                 </motion.div>
@@ -150,7 +150,7 @@ export default function DigitalMarketing() {
             <div className="grid md:grid-cols-2 gap-6">
               {detailedProcess.map((p, i) => (
                 <motion.div key={i} className="flex gap-4 p-6 bg-card rounded-2xl border border-border"
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                  initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                   <div className="w-10 h-10 rounded-full gradient-primary-accent flex items-center justify-center shrink-0">
                     <span className="text-sm font-bold text-primary-foreground">{i + 1}</span>
                   </div>
@@ -171,7 +171,7 @@ export default function DigitalMarketing() {
             <div className="grid sm:grid-cols-2 gap-6">
               {whyUs.map((item, i) => (
                 <motion.div key={i} className="flex gap-4 p-6 bg-card rounded-2xl border border-border"
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                  initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                   <div className="w-12 h-12 rounded-xl bg-primary/[0.08] flex items-center justify-center shrink-0">
                     <item.icon className="h-5 w-5 text-primary" />
                   </div>
@@ -198,7 +198,7 @@ export default function DigitalMarketing() {
             <div className="flex flex-wrap justify-center gap-3">
               {industries.map((ind, i) => (
                 <motion.span key={ind} className="px-5 py-2.5 bg-card border border-border rounded-full text-sm font-medium text-muted-foreground"
-                  initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }}>
+                  initial={false} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }}>
                   {ind}
                 </motion.span>
               ))}
@@ -233,7 +233,7 @@ export default function DigitalMarketing() {
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <motion.div className="bg-card border border-border rounded-xl overflow-hidden" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+    <motion.div className="bg-card border border-border rounded-xl overflow-hidden" initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between gap-4 p-5 text-left">
         <span className="font-display font-semibold text-lead text-sm">{q}</span>
         <HelpCircle className={`h-4 w-4 text-primary shrink-0 transition-transform ${open ? "rotate-45" : ""}`} />

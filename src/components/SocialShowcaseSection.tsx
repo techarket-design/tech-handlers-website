@@ -42,7 +42,7 @@ function PostCard({ post, index }: { post: any; index: number }) {
       href={post.link_url || "#"}
       target={post.link_url ? "_blank" : undefined}
       rel="noopener noreferrer"
-      initial={{ opacity: 0, y: 40, scale: 0.95 }}
+      initial={false}
       animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
       transition={{ duration: 0.55, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -8, scale: 1.015 }}
@@ -120,7 +120,7 @@ export default function SocialShowcaseSection() {
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <motion.div
           className="text-center max-w-2xl mx-auto mb-12"
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
@@ -149,7 +149,7 @@ export default function SocialShowcaseSection() {
         {/* Marquee handles caption */}
         <motion.p
           className="text-center text-xs text-muted-foreground mt-10"
-          initial={{ opacity: 0 }}
+          initial={false}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >

@@ -59,7 +59,7 @@ export default function LinkedInAutomation() {
       <SEOHead
         title="LinkedIn Automation & Lead Generation | Tech Handlers"
         description="B2B LinkedIn automation services — outreach, lead generation, profile optimization, content strategy, and Sales Navigator management. Book more meetings on autopilot."
-        canonical="https://techhandlers.in/services/linkedin-automation"
+        canonical="https://www.techhandlers.in/services/linkedin-automation"
         jsonLd={servicePageSchemas({ name: "LinkedIn Automation & Lead Generation", description: "B2B LinkedIn automation services — outreach, lead generation, profile optimization, content strategy, and Sales Navigator management. Book more meetings on autopilot.", path: "/services/linkedin-automation" }, [])}
       />
       <Header />
@@ -70,7 +70,7 @@ export default function LinkedInAutomation() {
             <div className="absolute top-20 right-[10%] w-80 h-80 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.06), transparent 70%)" }} />
           </div>
           <div className="container mx-auto px-4 lg:px-8 relative z-10">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
+            <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl">
               <span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4">LinkedIn Automation</span>
               <h1 className="text-4xl lg:text-6xl font-display font-bold text-foreground leading-[1.08] mb-6">
                 Turn LinkedIn into Your #1 <span className="text-primary">B2B Sales</span> Channel
@@ -100,7 +100,7 @@ export default function LinkedInAutomation() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((s, i) => (
                 <motion.div key={s.title} className="bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-shadow"
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                  initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                   <div className="w-12 h-12 rounded-xl bg-primary/[0.08] flex items-center justify-center mb-4">
                     <s.icon className="h-6 w-6 text-primary" />
                   </div>
@@ -118,7 +118,7 @@ export default function LinkedInAutomation() {
             <h2 className="text-3xl lg:text-4xl font-display font-bold text-background text-center mb-12">LinkedIn Results</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {results.map((r, i) => (
-                <motion.div key={i} className="text-center" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                <motion.div key={i} className="text-center" initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
                   <p className="text-4xl lg:text-5xl font-display font-bold text-primary mb-2">{r.metric}</p>
                   <p className="text-sm text-background/60">{r.label}</p>
                 </motion.div>
@@ -137,7 +137,7 @@ export default function LinkedInAutomation() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {useCases.map((uc, i) => (
                 <motion.div key={i} className="p-6 bg-card rounded-2xl border border-border"
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
+                  initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
                   <h3 className="font-display font-semibold text-lead mb-2">{uc.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{uc.desc}</p>
                 </motion.div>
@@ -156,7 +156,7 @@ export default function LinkedInAutomation() {
             <div className="grid md:grid-cols-2 gap-6">
               {detailedProcess.map((p, i) => (
                 <motion.div key={i} className="flex gap-4 p-6 bg-card rounded-2xl border border-border"
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                  initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                   <div className="w-10 h-10 rounded-full gradient-primary-accent flex items-center justify-center shrink-0">
                     <span className="text-sm font-bold text-primary-foreground">{i + 1}</span>
                   </div>
@@ -202,7 +202,7 @@ export default function LinkedInAutomation() {
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <motion.div className="bg-card border border-border rounded-xl overflow-hidden" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+    <motion.div className="bg-card border border-border rounded-xl overflow-hidden" initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between gap-4 p-5 text-left">
         <span className="font-display font-semibold text-lead text-sm">{q}</span>
         <HelpCircle className={`h-4 w-4 text-primary shrink-0 transition-transform ${open ? "rotate-45" : ""}`} />

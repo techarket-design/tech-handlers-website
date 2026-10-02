@@ -1,3 +1,4 @@
+import InternationalDelivery from "@/components/InternationalDelivery";
 import { useMemo, lazy, Suspense } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
@@ -89,18 +90,18 @@ const Index = () => {
   return (
     <>
       <SEOHead
-        title="Tech Handlers | Digital Marketing Agency in Delhi NCR & Gurgaon"
-        description="Delhi NCR's results-driven digital marketing & web development agency. SEO, performance marketing, social media, and lead generation across Delhi, Gurgaon & Noida."
-        canonical="https://techhandlers.in/"
+        title="Tech Handlers | Digital Marketing & Web Development Agency"
+        description="India-based digital marketing and web development for businesses worldwide. Explore SEO, performance marketing and website services, and discuss your project."
+        canonical="https://www.techhandlers.in/"
         jsonLd={[
           {
             "@context": "https://schema.org",
             "@type": "WebSite",
             name: "Tech Handlers",
-            url: "https://techhandlers.in/",
+            url: "https://www.techhandlers.in/",
             potentialAction: {
               "@type": "SearchAction",
-              target: "https://techhandlers.in/blog?search={search_term_string}",
+              target: "https://www.techhandlers.in/blog?search={search_term_string}",
               "query-input": "required name=search_term_string",
             },
           },
@@ -108,8 +109,8 @@ const Index = () => {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Tech Handlers",
-            url: "https://techhandlers.in/",
-            logo: "https://techhandlers.in/og-image.png",
+            url: "https://www.techhandlers.in/",
+            logo: "https://www.techhandlers.in/og-image.png",
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "customer service"
@@ -133,11 +134,11 @@ const Index = () => {
             </ErrorBoundary>
           );
         })}
+        <InternationalDelivery />
       </main>
       <Footer />
       <WhatsAppWidget />
       <StickyConversionBar />
-      <CookieConsentBanner />
     </>
   );
 };

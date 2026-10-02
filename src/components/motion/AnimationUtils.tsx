@@ -86,41 +86,8 @@ export function AnimatedHeading({
   as?: "h1" | "h2" | "h3" | "h4";
   delay?: number;
 }) {
-  const words = text.split(" ");
-  const MotionTag = motion[Tag] as any;
-
-  return (
-    <MotionTag className={className}>
-      <motion.span
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-      >
-        {words.map((word: string, i: number) => (
-          <motion.span
-            key={i}
-            className="inline-block mr-[0.3em]"
-            variants={{
-              hidden: { opacity: 0, y: 30, rotateX: -40 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                rotateX: 0,
-                transition: {
-                  duration: 0.5,
-                  delay: delay + i * 0.06,
-                  ease: [0.22, 1, 0.36, 1],
-                },
-              },
-            }}
-          >
-            {word}
-          </motion.span>
-        ))}
-      </motion.span>
-    </MotionTag>
-  );
+  const MotionTag = motion[Tag];
+  return <MotionTag className={className} initial={false}>{text}</MotionTag>;
 }
 
 /* ── Parallax wrapper ── */
@@ -196,15 +163,11 @@ export function RevealOnScroll({
     <motion.div
       ref={ref}
       className={className}
-      initial={{
-        opacity: 0,
-        y: dirMap[direction].y,
-        x: dirMap[direction].x,
-      }}
+      initial={false}
       animate={
         isInView
           ? { opacity: 1, y: 0, x: 0 }
-          : { opacity: 0, y: dirMap[direction].y, x: dirMap[direction].x }
+          : { opacity: 1, y: 0, x: 0 }
       }
       transition={{
         duration: 0.7,

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useTrackingScripts } from "@/hooks/useData";
 import { getConsent } from "@/components/CookieConsentBanner";
+import { useLocation } from "react-router-dom";
+import { emitMeasurement } from "@/lib/measurement";
 
 export default function TrackingScripts() {
+  const { pathname } = useLocation();
   const { data: scripts } = useTrackingScripts();
   const [consent, setConsent] = useState<string | null>(() => getConsent());
 
@@ -15,7 +18,7 @@ export default function TrackingScripts() {
   useEffect(() => {
     if (!scripts?.length) return;
     // Gate non-essential tracking behind consent (GDPR / DPDP Act)
-    if (consent !== "accepted") return;
+    if (consent !== "accepted" || pathname.startsWith("/admin")) return;
 
     scripts.forEach((s) => {
       if (!s.is_active) return;
@@ -26,7 +29,9 @@ export default function TrackingScripts() {
         div.innerHTML = s.head_code;
         Array.from(div.children).forEach((el) => {
           el.setAttribute("data-tracking", s.id);
-          document.head.appendChild(el);
+          const live = el.tagName === "SCRIPT" ? document.createElement("script") : el;
+          if (live !== el) { Array.from(el.attributes).forEach(a => live.setAttribute(a.name, a.value)); live.textContent = el.textContent; }
+          document.head.appendChild(live);
         });
       }
 
@@ -36,7 +41,9 @@ export default function TrackingScripts() {
         div.innerHTML = s.body_code;
         Array.from(div.children).forEach((el) => {
           el.setAttribute("data-tracking", s.id);
-          document.body.appendChild(el);
+          const live = el.tagName === "SCRIPT" ? document.createElement("script") : el;
+          if (live !== el) { Array.from(el.attributes).forEach(a => live.setAttribute(a.name, a.value)); live.textContent = el.textContent; }
+          document.body.appendChild(live);
         });
       }
     });
@@ -44,7 +51,11 @@ export default function TrackingScripts() {
     return () => {
       document.querySelectorAll("[data-tracking]").forEach((el) => el.remove());
     };
-  }, [scripts, consent]);
+  }, [scripts, consent, pathname.startsWith("/admin")]);
+
+  useEffect(() => {
+    if (consent === "accepted") emitMeasurement("virtual_page_view", { page_path: pathname, page_title: document.title });
+  }, [pathname, consent]);
 
   return null;
 }

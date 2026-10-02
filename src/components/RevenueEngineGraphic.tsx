@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useLowMotion } from "./motion/MotionPolicy";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { TrendingUp, DollarSign, Users, Brain, Play, Zap, BarChart3 } from "lucide-react";
 import { useRevenueEngineSegments } from "@/hooks/useData";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -44,7 +45,10 @@ interface Props { siteName?: string }
 
 export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Props) {
   const { data: dbSegments } = useRevenueEngineSegments();
-  const isMobile = useIsMobile();
+  const isMobile = useLowMotion();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const visible = useInView(rootRef, { margin: "100px" });
+  const activeMotion = !isMobile && visible;
 
   const SEGMENTS: Segment[] = (dbSegments as any[])?.length
     ? (dbSegments as any[]).map((s: any) => ({
@@ -59,7 +63,7 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
     : FALLBACK_SEGMENTS;
 
   const [active, setActive] = useState(0);
-  const [mounted, setMounted] = useState(false);
+  const mounted = true;
   const [hovered, setHovered] = useState(false);
 
   // Mouse parallax — only used on desktop
@@ -70,16 +74,16 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
   const rotateX = useTransform(springY, [-200, 200], [4, -4]);
   const rotateY = useTransform(springX, [-200, 200], [-4, 4]);
 
-  useEffect(() => { setMounted(true); }, []);
+
 
   // Auto-rotate — slower on mobile to reduce re-renders
   useEffect(() => {
-    if (hovered) return;
+    if (hovered || !activeMotion) return;
     const count = SEGMENTS.length || 4;
     const interval = isMobile ? 5000 : 3500;
     const t = setInterval(() => setActive((p) => (p + 1) % count), interval);
     return () => clearInterval(t);
-  }, [hovered, SEGMENTS.length, isMobile]);
+  }, [hovered, SEGMENTS.length, isMobile, activeMotion]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (isMobile) return;
@@ -101,15 +105,16 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
 
   return (
     <motion.div
+      ref={rootRef}
       className={`relative w-full mx-auto select-none ${isMobile ? 'max-w-[320px]' : 'max-w-[480px]'}`}
-      onMouseMove={!isMobile ? handleMouseMove : undefined}
-      onMouseEnter={!isMobile ? () => setHovered(true) : undefined}
-      onMouseLeave={!isMobile ? () => { setHovered(false); mouseX.set(0); mouseY.set(0); } : undefined}
-      style={!isMobile ? { perspective: 800 } : undefined}
+      onMouseMove={activeMotion ? handleMouseMove : undefined}
+      onMouseEnter={activeMotion ? () => setHovered(true) : undefined}
+      onMouseLeave={activeMotion ? () => { setHovered(false); mouseX.set(0); mouseY.set(0); } : undefined}
+      style={activeMotion ? { perspective: 800 } : undefined}
     >
-      <motion.div style={!isMobile ? { rotateX, rotateY, transformStyle: "preserve-3d" } : undefined}>
+      <motion.div style={activeMotion ? { rotateX, rotateY, transformStyle: "preserve-3d" } : undefined}>
         {/* Pulsing rings — desktop only */}
-        {!isMobile && (
+        {activeMotion && (
           <>
             <motion.div
               className="absolute inset-0 m-auto rounded-full"
@@ -144,7 +149,7 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
               </linearGradient>
             ))}
             {/* SVG filters — desktop only */}
-            {!isMobile && (
+            {activeMotion && (
               <>
                 <filter id="arc-glow" x="-40%" y="-40%" width="180%" height="180%">
                   <feGaussianBlur stdDeviation="8" result="blur" />
@@ -158,7 +163,7 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
           </defs>
 
           {/* Orbiting particles — desktop only */}
-          {!isMobile && [
+          {activeMotion && [
             { r: R + SW / 2 + 20, speed: 20, size: 3, opacity: 0.3, color: "var(--primary)" },
             { r: R + SW / 2 + 35, speed: 28, size: 2.5, opacity: 0.2, color: "var(--accent)" },
             { r: R - SW / 2 - 18, speed: 15, size: 2, opacity: 0.25, color: "var(--success)" },
@@ -168,7 +173,7 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
               r={p.size}
               fill={`hsl(${p.color})`}
               opacity={p.opacity}
-              initial={{ opacity: 0 }}
+              initial={false}
               animate={{ opacity: mounted ? p.opacity : 0 }}
               transition={{ delay: 1.5 }}
             >
@@ -190,18 +195,18 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
               <g
                 key={seg.id}
                 className="cursor-pointer"
-                onMouseEnter={!isMobile ? () => setActive(i) : undefined}
+                onMouseEnter={activeMotion ? () => setActive(i) : undefined}
                 onClick={isMobile ? () => setActive(i) : undefined}
               >
                 {/* Active glow halo — desktop only */}
-                {isActive && !isMobile && (
+                {isActive && activeMotion && (
                   <motion.path
                     d={arc(CX, CY, R, s, e)}
                     fill="none"
                     stroke={seg.color}
                     strokeWidth={SW + 20}
                     strokeLinecap="round"
-                    initial={{ opacity: 0 }}
+                    initial={false}
                     animate={{ opacity: 0.1 }}
                     transition={{ duration: 0.5 }}
                     filter="url(#arc-glow)"
@@ -214,7 +219,7 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
                   fill="none"
                   stroke={`url(#g-${seg.id})`}
                   strokeLinecap="round"
-                  initial={{ pathLength: 0, strokeWidth: SW }}
+                  initial={false}
                   animate={{
                     pathLength: mounted ? 1 : 0,
                     strokeWidth: isActive ? SW + 6 : SW,
@@ -243,7 +248,7 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
                       textAnchor="middle"
                       dominantBaseline="central"
                       transform={`rotate(${textRotation}, ${pt.x}, ${pt.y})`}
-                      initial={{ opacity: 0 }}
+                      initial={false}
                       animate={{ opacity: mounted ? (isActive ? 1 : 0.85) : 0 }}
                       transition={{ delay: 1.1 + i * 0.12, duration: 0.6 }}
                       style={{ textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}
@@ -269,19 +274,19 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
                   x1={from.x} y1={from.y} x2={to.x} y2={to.y}
                   stroke={SEGMENTS[i].color}
                   strokeWidth={1.5}
-                  initial={{ pathLength: 0, opacity: 0 }}
+                  initial={false}
                   animate={{ pathLength: mounted ? 1 : 0, opacity: isActive ? 0.8 : 0.2 }}
                   transition={{ delay: 1.5 + i * 0.08, duration: 0.4, opacity: { duration: 0.3 } }}
                 />
                 <motion.circle
                   cx={to.x} cy={to.y} r={isActive ? 4 : 3}
                   fill={SEGMENTS[i].color}
-                  initial={{ scale: 0 }}
+                  initial={false}
                   animate={{ scale: mounted ? 1 : 0, opacity: isActive ? 1 : 0.25 }}
                   transition={{ delay: 1.6 + i * 0.08, type: "spring", opacity: { duration: 0.3 } }}
                 />
                 {/* Pulse ring on active dot — desktop only */}
-                {isActive && !isMobile && (
+                {isActive && activeMotion && (
                   <motion.circle
                     cx={to.x} cy={to.y} r={4}
                     fill="none"
@@ -304,13 +309,13 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
               <g
                 key={`ic-${i}`}
                 className="cursor-pointer"
-                onMouseEnter={!isMobile ? () => setActive(i) : undefined}
+                onMouseEnter={activeMotion ? () => setActive(i) : undefined}
                 onClick={isMobile ? () => setActive(i) : undefined}
               >
                 {/* Glow behind active icon — desktop only */}
-                {isActive && !isMobile && (
+                {isActive && activeMotion && (
                   <motion.circle cx={pt.x} cy={pt.y} r={18} fill={SEGMENTS[i].color} opacity={0.15}
-                    initial={{ scale: 0 }} animate={{ scale: [1, 1.3, 1] }}
+                    initial={false} animate={{ scale: [1, 1.3, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
                 )}
@@ -319,7 +324,7 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
                   fill={isActive ? SEGMENTS[i].color : "hsl(var(--card))"}
                   stroke={SEGMENTS[i].color}
                   strokeWidth={isActive ? 0 : 2}
-                  initial={{ r: 0 }}
+                  initial={false}
                   animate={{ r: mounted ? (isActive ? 14 : 11) : 0 }}
                   transition={{ delay: 1.1 + i * 0.1, type: "spring", stiffness: 150, r: { duration: 0.3 } }}
                 />
@@ -327,7 +332,7 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
                   x={pt.x} y={pt.y + 1} textAnchor="middle" dominantBaseline="central"
                   fontSize="11" fontWeight="bold"
                   fill={isActive ? "white" : SEGMENTS[i].color}
-                  initial={{ opacity: 0 }}
+                  initial={false}
                   animate={{ opacity: mounted ? 1 : 0 }}
                   transition={{ delay: 1.2 + i * 0.1 }}
                 >
@@ -341,23 +346,23 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
           <motion.circle
             cx={CX} cy={CY} r={R - SW / 2 - 6}
             fill="hsl(var(--card))"
-            filter={!isMobile ? "url(#soft-shadow)" : undefined}
+            filter={activeMotion ? "url(#soft-shadow)" : undefined}
             stroke="hsl(var(--border))"
             strokeWidth="0.5"
-            initial={{ scale: 0 }}
+            initial={false}
             animate={{ scale: mounted ? 1 : 0 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 80, damping: 15 }}
           />
 
           {/* Inner ring decoration — desktop only */}
-          {!isMobile && (
+          {activeMotion && (
             <motion.circle
               cx={CX} cy={CY} r={R - SW / 2 - 18}
               fill="none"
               stroke="hsl(var(--border))"
               strokeWidth="0.5"
               strokeDasharray="3 6"
-              initial={{ opacity: 0 }}
+              initial={false}
               animate={{ opacity: mounted ? 0.4 : 0 }}
               transition={{ delay: 0.8 }}
             >
@@ -366,7 +371,7 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
           )}
 
           {/* Center text */}
-          <motion.g initial={{ opacity: 0 }} animate={{ opacity: mounted ? 1 : 0 }} transition={{ delay: 0.7, duration: 0.8 }}>
+          <motion.g initial={false} animate={{ opacity: mounted ? 1 : 0 }} transition={{ delay: 0.7, duration: 0.8 }}>
             <text x={CX} y={CY - 18} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="9" fontWeight="600" letterSpacing="2.5" className="uppercase">
               {siteName}
             </text>
@@ -374,13 +379,13 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
               Revenue Engine
             </text>
             <motion.g
-              initial={{ opacity: 0, y: 5 }}
+              initial={false}
               animate={{ opacity: mounted ? 1 : 0, y: 0 }}
               transition={{ delay: 1.2, duration: 0.5 }}
             >
               <rect x={CX - 62} y={CY + 14} width="124" height="24" rx="12" fill="hsl(142 76% 36% / 0.1)" stroke="hsl(142 76% 36% / 0.2)" strokeWidth="0.8" />
               <text x={CX} y={CY + 30} textAnchor="middle" fill="hsl(142 76% 36%)" fontSize="8.5" fontWeight="700">
-                ▲ 15% Higher Lead Growth
+                Plan · Execute · Measure
               </text>
             </motion.g>
           </motion.g>
@@ -390,17 +395,17 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
         <div className="absolute bottom-[32%] left-1/2 -translate-x-1/2 flex gap-2">
           {[
             { Icon: BarChart3, color: SEGMENTS[0].color },
-            { Icon: Zap, color: SEGMENTS[3].color },
-            { Icon: Play, color: SEGMENTS[1].color },
+            { Icon: Zap, color: (SEGMENTS[3] || SEGMENTS[0]).color },
+            { Icon: Play, color: (SEGMENTS[1] || SEGMENTS[0]).color },
           ].map(({ Icon, color }, i) => (
             <motion.div
               key={i}
               className="w-7 h-7 rounded-full flex items-center justify-center shadow-md border border-card/50"
               style={{ backgroundColor: color }}
-              initial={{ scale: 0 }}
+              initial={false}
               animate={{ scale: mounted ? 1 : 0 }}
               transition={{ delay: 1.4 + i * 0.08, type: "spring" }}
-              whileHover={!isMobile ? { scale: 1.2, y: -2 } : undefined}
+              whileHover={activeMotion ? { scale: 1.2, y: -2 } : undefined}
             >
               <Icon className="h-3 w-3 text-primary-foreground" />
             </motion.div>
@@ -412,7 +417,7 @@ export default function RevenueEngineGraphic({ siteName = "Tech Handlers" }: Pro
       <AnimatePresence mode="wait">
         <motion.div
           key={activeData.id}
-          initial={{ opacity: 0, y: 16 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}

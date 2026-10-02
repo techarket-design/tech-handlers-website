@@ -3,17 +3,22 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "predev": "npx tsx scripts/generate-sitemap.ts",
+    "predev": "node scripts/check-env.mjs",
     "dev": "vite",
-    "prebuild": "npx tsx scripts/generate-sitemap.ts",
-    "build": "vite build",
-    "postbuild": "node scripts/apply-snapshots.mjs",
+    "prebuild": "node scripts/check-env.mjs",
+    "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && node scripts/finalize-build.mjs",
+    "postbuild": "node scripts/verify-build.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "node scripts/preview-server.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:server": "node --test tests/*.test.mjs",
+    "test:routes": "node scripts/smoke-render.mjs"
   },
   "dependencies": {
     "@hello-pangea/dnd": "17.0.0",

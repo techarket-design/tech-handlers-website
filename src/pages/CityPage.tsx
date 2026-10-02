@@ -41,7 +41,7 @@ function renderMarkdown(text?: string | null) {
 
 export default function CityPage() {
   const { slug } = useParams<{ slug: string }>();
-  const { data: rows, isLoading } = useGenericTable("city_pages", { filter: { slug } });
+  const { data: rows, isLoading } = useGenericTable("city_pages", { filter: { slug, is_published: true } });
   const page: any = rows?.[0];
 
   if (isLoading) {
@@ -73,7 +73,7 @@ export default function CityPage() {
     );
   }
 
-  const canonical = `https://techhandlers.in/locations/${page.slug}`;
+  const canonical = `https://www.techhandlers.in/locations/${page.slug}`;
   const faqs: Array<{ q: string; a: string }> = Array.isArray(page.faqs) ? page.faqs : [];
 
   const localBusinessLd = {
@@ -84,14 +84,14 @@ export default function CityPage() {
     url: canonical,
     areaServed: { "@type": "City", name: page.city },
     address: { "@type": "PostalAddress", addressLocality: page.city, addressCountry: "IN" },
-    telephone: "+91-98765-43210",
+    telephone: "+91-92160-35795",
   };
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://techhandlers.in/" },
-      { "@type": "ListItem", position: 2, name: "Locations", item: "https://techhandlers.in/locations" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.techhandlers.in/" },
+      { "@type": "ListItem", position: 2, name: "Locations", item: "https://www.techhandlers.in/" },
       { "@type": "ListItem", position: 3, name: `${page.service} in ${page.city}`, item: canonical },
     ],
   };
@@ -120,7 +120,7 @@ export default function CityPage() {
             <div className="absolute top-20 right-[10%] w-80 h-80 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.06), transparent 70%)" }} />
           </div>
           <div className="container mx-auto px-4 lg:px-8 relative z-10">
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl">
+            <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl">
               <span className="inline-flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4">
                 <MapPin className="h-3.5 w-3.5" /> {page.city} · {page.service}
               </span>

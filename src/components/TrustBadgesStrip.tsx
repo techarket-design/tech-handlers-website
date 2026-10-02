@@ -43,7 +43,7 @@ export function TrustBadgesInline({ variant = "light" }: { variant?: "light" | "
       {badges.map((b, i) => (
         <motion.div
           key={b.id}
-          initial={{ opacity: 0, y: 8 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: i * 0.04, duration: 0.35 }}
@@ -73,7 +73,7 @@ export default function TrustBadgesSection() {
     <section className="section-white py-12 border-y border-border/40">
       <div className="container mx-auto px-4 lg:px-8">
         <motion.p
-          initial={{ opacity: 0 }}
+          initial={false}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           className="text-center text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.22em] mb-6"

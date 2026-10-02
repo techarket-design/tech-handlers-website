@@ -8,7 +8,7 @@ const ACTIONS: Action[] = [
   { icon: Heading3, label: "Heading 3", wrap: ["<h3>", "</h3>"] },
   { icon: Bold, label: "Bold", wrap: ["<strong>", "</strong>"] },
   { icon: Italic, label: "Italic", wrap: ["<em>", "</em>"] },
-  { icon: Link2, label: "Link", wrap: ['<a href="https://techhandlers.in/">', "</a>"] },
+  { icon: Link2, label: "Link", wrap: ['<a href="https://www.techhandlers.in/">', "</a>"] },
   { icon: Quote, label: "Quote", wrap: ["<blockquote>", "</blockquote>"] },
   { icon: List, label: "Bullet list", block: "<ul>\n  <li>Item one</li>\n  <li>Item two</li>\n</ul>" },
   { icon: ListOrdered, label: "Numbered list", block: "<ol>\n  <li>Step one</li>\n  <li>Step two</li>\n</ol>" },

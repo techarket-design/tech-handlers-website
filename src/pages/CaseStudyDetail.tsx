@@ -1,3 +1,4 @@
+import NotFound from "./NotFound";
 import { useParams, Link, Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -96,7 +97,7 @@ export default function CaseStudyDetail() {
     );
   }
 
-  if (!study) return <Navigate to="/case-studies" replace />;
+  if (!study) return <NotFound />;
 
   const heroImg = study.hero_image_url || study.image_url;
   const blocks = (Array.isArray(study.body_blocks) ? study.body_blocks : []) as unknown as Block[];
@@ -109,7 +110,7 @@ export default function CaseStudyDetail() {
       <SEOHead
         title={study.meta_title || `${study.title} | Tech Handlers Case Study`}
         description={study.meta_description || study.short_description || `${study.title} — case study by Tech Handlers.`}
-        canonical={`https://techhandlers.in/case-studies/${study.slug}`}
+        canonical={`https://www.techhandlers.in/case-studies/${study.slug}`}
         ogImage={heroImg || undefined}
         jsonLd={{
           "@context": "https://schema.org",
@@ -118,15 +119,15 @@ export default function CaseStudyDetail() {
           image: heroImg ? [heroImg] : undefined,
           datePublished: study.published_at,
           dateModified: study.updated_at,
-          author: { "@type": "Organization", name: "Tech Handlers", url: "https://techhandlers.in" },
+          author: { "@type": "Organization", name: "Tech Handlers", url: "https://www.techhandlers.in" },
           publisher: {
             "@type": "Organization",
             name: "Tech Handlers",
-            logo: { "@type": "ImageObject", url: "https://techhandlers.in/favicon.ico" },
+            logo: { "@type": "ImageObject", url: "https://www.techhandlers.in/favicon.ico" },
           },
           description: study.short_description,
           about: study.industry || study.category,
-          mainEntityOfPage: `https://techhandlers.in/case-studies/${study.slug}`,
+          mainEntityOfPage: `https://www.techhandlers.in/case-studies/${study.slug}`,
         }}
       />
       <Header />
@@ -148,7 +149,7 @@ export default function CaseStudyDetail() {
               {study.industry && <Badge variant="outline"><Briefcase className="h-3 w-3 mr-1" />{study.industry}</Badge>}
               {study.duration && <Badge variant="outline"><Calendar className="h-3 w-3 mr-1" />{study.duration}</Badge>}
             </div>
-            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            <motion.h1 initial={false} animate={{ opacity: 1, y: 0 }}
               className="text-4xl lg:text-6xl font-display font-bold text-lead mb-4">
               {study.title}
             </motion.h1>
@@ -162,7 +163,7 @@ export default function CaseStudyDetail() {
             {results.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10">
                 {results.map((r, i) => (
-                  <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                  <motion.div key={i} initial={false} animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 + i * 0.08 }}
                     className="bg-surface-white border border-border rounded-xl p-4 text-center">
                     <p className="text-2xl lg:text-3xl font-display font-bold text-primary">{r.value}</p>

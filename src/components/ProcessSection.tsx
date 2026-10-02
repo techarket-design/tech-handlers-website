@@ -49,11 +49,11 @@ export default function ProcessSection() {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="text-center mb-16">
           <motion.span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4"
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             Our Process
           </motion.span>
           <AnimatedHeading as="h2" text={heading} className="text-3xl lg:text-5xl font-display font-bold text-lead mb-4" />
-          <motion.p className="text-muted-foreground max-w-lg mx-auto" initial={{ opacity: 0 }}
+          <motion.p className="text-muted-foreground max-w-lg mx-auto" initial={false}
             whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
             {subheading}
           </motion.p>
@@ -67,13 +67,13 @@ export default function ProcessSection() {
               const IconComp = iconMap[step.icon_name || "Scan"] || Scan;
               const color = step.color || "#6366f1";
               return (
-                <motion.div key={step.id || i} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+                <motion.div key={step.id || i} initial={false} whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
                   <motion.div className="bg-surface-white rounded-2xl p-6 lg:p-7 border border-border/70 relative group h-full overflow-hidden"
                     whileHover={!isMobile ? { y: -6, boxShadow: `0 25px 60px -15px ${color}22` } : undefined}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}>
                     <motion.span className="text-6xl font-display font-bold text-lead/[0.04] absolute top-3 right-4 select-none"
-                      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.15 + 0.3 }}>
+                      initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.15 + 0.3 }}>
                       {step.step_number}
                     </motion.span>
                     <div className="flex items-center gap-3 mb-4">

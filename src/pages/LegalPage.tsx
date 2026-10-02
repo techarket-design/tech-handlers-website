@@ -1,3 +1,4 @@
+import NotFound from "./NotFound";
 import { useParams, Navigate, useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import Header from "@/components/Header";
@@ -29,9 +30,9 @@ export default function LegalPage() {
     enabled: ALLOWED.includes(slug),
   });
 
-  if (!ALLOWED.includes(slug)) return <Navigate to="/404" replace />;
+  if (!ALLOWED.includes(slug) || (!isLoading && !error && !data)) return <NotFound />;
 
-  const canonical = `https://techhandlers.in/${slug}`;
+  const canonical = `https://www.techhandlers.in/${slug}`;
 
   return (
     <>

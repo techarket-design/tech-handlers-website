@@ -1,73 +1,38 @@
-# Welcome to your Lovable project
+# Tech Handlers website
 
-## Project info
+This project uses React, Vite, Supabase and Vercel. Keep the existing `package-lock.json` so everyone installs the same dependency versions.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Run it from VS Code on Windows
 
-## How can I edit this code?
+1. Install the Node.js 22 LTS release. It includes npm. If `node --version` or `npm --version` is not recognized in VS Code, close and reopen VS Code after installing Node so the terminal refreshes its PATH.
+2. In VS Code, choose **File → Open Folder** and open the `tech-handlers-website` repository folder itself.
+3. Open **Terminal → New Terminal**. Confirm it is in the folder containing `package.json`:
 
-There are several ways of editing your application.
+   ```powershell
+   node --version
+   npm --version
+   ```
 
-**Use Lovable**
+   Node should report version 22 or higher. If you see `npm is not recognized`, Node/npm is not installed or VS Code still has the old PATH.
+4. Copy `.env.example` to `.env.local`. Fill in `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` from **Supabase → Project Settings → API**. These are public browser settings; never use a service-role key as the publishable key.
+5. Install dependencies and start Vite:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+   ```powershell
+   npm ci
+   npm run dev
+   ```
 
-Changes made via Lovable will be committed automatically to this repo.
+   Open the local URL Vite prints (normally `http://localhost:8080`).
 
-**Use your preferred IDE**
+To create the Vercel production output locally, run:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```powershell
+npm run build
+npm run preview
 ```
 
-**Edit a file directly in GitHub**
+Then open `http://127.0.0.1:4173`. The local preview renders live published Supabase content. The public form API also needs the optional server-only values in `.env.local` before it can save a test enquiry. Do not use production credentials to submit test enquiries.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+`npm run dev` starts Vite for day-to-day frontend work. It does not emulate Vercel's server-rendered routes or server lead API; use `npm run build` followed by `npm run preview` to inspect those locally.
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+For server setup, Supabase migrations, publishing behavior and deployment checks, see [DEPLOYMENT.md](./DEPLOYMENT.md).

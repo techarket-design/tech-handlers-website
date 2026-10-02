@@ -1,6 +1,8 @@
+import { useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { captureAttribution, emitLeadConversion } from "@/lib/measurement";
 import { enqueue } from "@/lib/mutationQueue";
 
 type Tables = Database["public"]["Tables"];
@@ -55,12 +57,12 @@ export function useGenericTable(
 const SITE_SETTINGS_DEFAULTS = {
   site_name: "Tech Handlers",
   tagline: "Your Digital Growth Partner. Worldwide.",
-  hero_badge_text: "India's Trusted Digital Agency",
+  hero_badge_text: "India-based. Working across markets.",
   hero_subtitle: "We're a data-driven digital marketing & web development agency helping businesses scale globally. From SEO to full-stack websites — we handle the tech so you can focus on growth.",
   cta_heading: "Ready to Scale Your Business?",
   cta_description: "Get a comprehensive audit of your digital presence with actionable insights. No strings attached.",
   cta_button_text: "Claim Your Free Audit",
-  cta_badge_text: "Limited Spots This Month",
+  cta_badge_text: "Start with a conversation",
   contact_section_heading: "Let's Build Your Digital Presence",
   contact_form_heading: "Get Your Free Growth Audit",
   footer_description: "India's results-driven digital marketing & web development agency. Turning clicks into customers and code into revenue.",
@@ -70,8 +72,8 @@ const SITE_SETTINGS_DEFAULTS = {
   services_subheading: "Every service is engineered to move your bottom line.",
   testimonials_heading: "Trusted by Leaders Across Industries",
   faq_heading: "Questions We Get Asked a Lot",
-  process_heading: "From Audit to Domination in 4 Steps",
-  process_subheading: "A battle-tested framework refined over 150+ successful campaigns",
+  process_heading: "A Clear Process from Discovery to Delivery",
+  process_subheading: "Align goals, agree the scope, deliver and review performance.",
   why_us_heading: "Built Different. Proven Results.",
   why_us_subheading: "Here's why the smartest brands choose us",
   platform_expertise_heading: "Experts Across Leading Marketing Platforms",
@@ -114,12 +116,27 @@ export const useMetrics = () =>
 export const useTrackingScripts = () =>
   useTable("tracking_scripts", { filter: { is_active: true } });
 
-export const useBlogPosts = (publishedOnly = true) =>
-  useTable("blog_posts", {
-    filter: publishedOnly ? { is_published: true } : undefined,
-    orderBy: "created_at",
-    ascending: false,
-  });
+export const useBlogPosts = (publishedOnly = true) => useQuery({
+  queryKey: ["blog_posts", publishedOnly ? { is_published: true } : undefined],
+  queryFn: async () => {
+    const fields = "id,title,slug,excerpt,featured_image_url,author_name,category,tags,meta_title,meta_description,published_at,created_at,updated_at,is_published";
+    let query = supabase.from("blog_posts").select(fields).order("created_at", { ascending: false }).limit(100);
+    if (publishedOnly) query = query.eq("is_published", true);
+    const { data, error } = await query;
+    if (error) throw error;
+    return data;
+  },
+});
+
+export const useBlogPost = (slug?: string) => useQuery({
+  queryKey: ["blog_post", slug],
+  enabled: !!slug,
+  queryFn: async () => {
+    const { data, error } = await supabase.from("blog_posts").select("*").eq("slug", slug!).eq("is_published", true).maybeSingle();
+    if (error) throw error;
+    return data;
+  },
+});
 
 export const useProcessSteps = () =>
   useGenericTable("process_steps", { filter: { is_active: true }, orderBy: "sort_order" });
@@ -231,32 +248,35 @@ export const useAdminFooterLinks = () => useGenericTable("footer_links", { order
 export const useAdminRevenueEngineSegments = () => useGenericTable("revenue_engine_segments", { orderBy: "sort_order" });
 export const useAdminHomepageSections = () => useGenericTable("homepage_sections", { orderBy: "sort_order", ascending: true });
 
-// Submit lead (public)
+// All public forms use one validated, idempotent server endpoint.
 export const useSubmitLead = () => {
+  const pendingRef = useRef<{ body: string; id: string }>();
   return useMutation({
+    retry: false,
     mutationFn: async (lead: Tables["leads"]["Insert"]) => {
-      const { error } = await supabase.from("leads").insert(lead);
-      if (error) throw error;
-
-      // Fire-and-forget Formspree submission for email notifications
-      fetch("https://formspree.io/f/xlgoqgqy", {
+      const body = JSON.stringify(lead);
+      if (!pendingRef.current || pendingRef.current.body !== body) pendingRef.current = { body, id: crypto.randomUUID() };
+      const response = await fetch("/api/leads", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name: lead.name,
-          email: lead.email,
-          phone: lead.phone,
-          company: lead.company,
-          service_interest: lead.service_interest,
-          budget: lead.budget,
-          message: lead.message,
-          source: lead.source || "website",
-        }),
-      }).catch(() => {});
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...lead, request_id: pendingRef.current.id, attribution: captureAttribution() }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to submit inquiry");
+      emitLeadConversion(result.id, lead.source || "website", lead.service_interest || "");
+      pendingRef.current = undefined;
+      return result;
     },
   });
 };
 
+function invalidatePublicDetails(qc: ReturnType<typeof useQueryClient>, table: string) {
+  if (table === "blog_posts") void qc.invalidateQueries({ queryKey: ["blog_post"] });
+  if (table === "portfolio") {
+    void qc.invalidateQueries({ queryKey: ["case_study"] });
+    void qc.invalidateQueries({ queryKey: ["case_studies_related"] });
+  }
+}
 // Generic CRUD mutations for admin
 export function useUpsertRow<T extends keyof Tables>(table: T) {
   const qc = useQueryClient();
@@ -266,7 +286,7 @@ export function useUpsertRow<T extends keyof Tables>(table: T) {
       if (error) throw error;
       return data as any;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: [table] }),
+    onSuccess: () => { invalidatePublicDetails(qc, table); return qc.invalidateQueries({ queryKey: [table] }); },
   });
 }
 
@@ -295,7 +315,7 @@ export function useUpdateRow<T extends keyof Tables>(table: T) {
       const { id, ...patch } = vars as any;
       enqueue({ kind: "update", table: table as string, rowId: id, patch });
     },
-    onSettled: () => qc.invalidateQueries({ queryKey: [table] }),
+    onSettled: () => { invalidatePublicDetails(qc, table); return qc.invalidateQueries({ queryKey: [table] }); },
   });
 }
 
@@ -309,7 +329,7 @@ export function useUpsertGenericRow(table: string) {
     onError: (_e, row: any) => {
       enqueue({ kind: "upsert", table, row });
     },
-    onSettled: () => qc.invalidateQueries({ queryKey: [table] }),
+    onSettled: () => { invalidatePublicDetails(qc, table); return qc.invalidateQueries({ queryKey: [table] }); },
   });
 }
 
@@ -332,7 +352,7 @@ export function useDeleteRow<T extends keyof Tables>(table: T) {
       ctx?.snapshots?.forEach(([key, data]: any) => qc.setQueryData(key, data));
       enqueue({ kind: "delete", table: table as string, rowId: id });
     },
-    onSettled: () => qc.invalidateQueries({ queryKey: [table] }),
+    onSettled: () => { invalidatePublicDetails(qc, table); return qc.invalidateQueries({ queryKey: [table] }); },
   });
 }
 
@@ -344,7 +364,7 @@ export function useDeleteGenericRow(table: string) {
       if (error) throw error;
     },
     onError: (_e, id: string) => enqueue({ kind: "delete", table, rowId: id }),
-    onSettled: () => qc.invalidateQueries({ queryKey: [table] }),
+    onSettled: () => { invalidatePublicDetails(qc, table); return qc.invalidateQueries({ queryKey: [table] }); },
   });
 }
 

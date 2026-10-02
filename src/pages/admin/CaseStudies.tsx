@@ -82,12 +82,13 @@ export default function CaseStudies() {
 
   const save = async () => {
     if (!editing.title || !editing.slug) return toast.error("Title and slug are required");
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(editing.slug) || editing.slug.length > 180) return toast.error("Use a short lowercase slug with words separated by hyphens");
     const payload = { ...editing };
     if (!payload.meta_title) payload.meta_title = payload.title;
     if (!payload.meta_description) payload.meta_description = payload.short_description || "";
     if (payload.is_active && !payload.published_at) payload.published_at = new Date().toISOString();
     await upsert.mutateAsync(payload);
-    toast.success("Case study saved");
+    toast.success("Case study saved. Public pages refresh within 30 seconds.");
     close();
   };
 

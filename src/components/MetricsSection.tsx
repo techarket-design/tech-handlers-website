@@ -1,3 +1,4 @@
+import { useLowMotion } from "./motion/MotionPolicy";
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import CountUp from "react-countup";
@@ -43,7 +44,7 @@ export default function MetricsSection() {
   const [triggered, setTriggered] = useState(false);
   const { data: dbMetrics } = useMetrics();
   const { data: settings } = useSiteSettings();
-  const isMobile = useIsMobile();
+  const isMobile = useLowMotion();
 
   if (isInView && !triggered) setTriggered(true);
 
@@ -74,7 +75,7 @@ export default function MetricsSection() {
         <div className="text-center mb-14">
           <AnimatedHeading as="h2" text={heading} className="text-3xl lg:text-5xl font-display font-bold mb-4" />
           <motion.p className="text-surface-white/50 max-w-md mx-auto text-sm lg:text-base"
-            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
+            initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
             {subheading}
           </motion.p>
         </div>
@@ -84,18 +85,18 @@ export default function MetricsSection() {
             const numericValue = parseFloat(m.value.replace(/[^0-9.]/g, ""));
             const prefix = m.value.match(/^[^0-9]*/)?.[0] || "";
             return (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+              <motion.div key={i} initial={false} whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 viewport={{ once: true }} className="text-center group relative">
                 {!isMobile && (
                   <motion.div className="absolute inset-0 bg-primary/[0.03] rounded-2xl blur-2xl"
-                    initial={{ opacity: 0, scale: 0.5 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
+                    initial={false} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
                     transition={{ delay: i * 0.12 + 0.3 }} />
                 )}
                 <motion.div className="relative text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-display font-bold mb-2 tracking-tight"
                   whileHover={!isMobile ? { scale: 1.05 } : undefined} transition={{ type: "spring", stiffness: 300 }}>
                   <span className="text-surface-white/30">{prefix}</span>
-                  {triggered ? <CountUp end={numericValue} duration={2.5} /> : "0"}
+                  {m.value.replace(/^[^0-9]*/, "")}
                   <span className="gradient-text">{m.suffix}</span>
                 </motion.div>
                 <DrawLine className="max-w-[40px] mx-auto mb-3 bg-surface-white/10" delay={i * 0.1 + 0.5} />

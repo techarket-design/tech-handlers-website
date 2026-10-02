@@ -4,4 +4,4 @@ Disallow: /admin/
 Disallow: /oauth/
 
 # Tell bots where the sitemap is
-Sitemap: https://techhandlers.in/sitemap.xml
+Sitemap: https://www.techhandlers.in/sitemap.xml

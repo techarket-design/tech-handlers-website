@@ -1,4 +1,7 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import PublicConsent from "@/components/PublicConsent";
+import { lazy, Suspense } from "react";
+import { StaticRouter } from "react-router-dom/server";
+import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,6 +10,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import TrackingScripts from "@/components/TrackingScripts";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import ScrollToTop from "@/components/ScrollToTop";
+import MotionPolicy from "@/components/motion/MotionPolicy";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -21,56 +25,41 @@ import Blog from "./pages/Blog.tsx";
 import BlogPost from "./pages/BlogPost.tsx";
 import CaseStudies from "./pages/CaseStudies.tsx";
 import CaseStudyDetail from "./pages/CaseStudyDetail.tsx";
-import AdminLayout from "./components/AdminLayout.tsx";
-import AdminLogin from "./pages/admin/Login.tsx";
-import AdminDashboard from "./pages/admin/Dashboard.tsx";
-import ViewLeads from "./pages/admin/ViewLeads.tsx";
-import BlogPosts from "./pages/admin/BlogPosts.tsx";
-import CRMPipeline from "./pages/admin/CRMPipeline.tsx";
-import LeadDetail from "./pages/admin/LeadDetail.tsx";
-import TeamManagement from "./pages/admin/TeamManagement.tsx";
-import FollowUpReminders from "./pages/admin/FollowUpReminders.tsx";
-import AdminTracking from "./pages/admin/Tracking.tsx";
-import AdminSettings from "./pages/admin/Settings.tsx";
-import AdminNavLinks from "./pages/admin/NavLinks.tsx";
-import AdminFooterLinks from "./pages/admin/FooterLinks.tsx";
-import FileManager from "./pages/admin/FileManager.tsx";
-import Tasks from "./pages/admin/Tasks.tsx";
-import TaskProjects from "./pages/admin/TaskProjects.tsx";
-import ProjectDetail from "./pages/admin/ProjectDetail.tsx";
-import TaskDetail from "./pages/admin/TaskDetail.tsx";
-import Customers from "./pages/admin/Customers.tsx";
-import CustomerDetail from "./pages/admin/CustomerDetail.tsx";
-import Invoices from "./pages/admin/billing/Invoices.tsx";
-import InvoiceDetail from "./pages/admin/billing/InvoiceDetail.tsx";
-import Payments from "./pages/admin/billing/Payments.tsx";
-import BillingReports from "./pages/admin/billing/Reports.tsx";
-import MyAccount from "./pages/admin/MyAccount.tsx";
-import MyWorkspace from "./pages/admin/MyWorkspace.tsx";
-import AdminCaseStudies from "./pages/admin/CaseStudies.tsx";
-import AdminSocialPosts from "./pages/admin/SocialPosts.tsx";
-import AdminCityPages from "./pages/admin/CityPages.tsx";
+const AdminLayout = lazy(() => import("./components/AdminLayout.tsx"));
+const AdminLogin = lazy(() => import("./pages/admin/Login.tsx"));
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard.tsx"));
+const ViewLeads = lazy(() => import("./pages/admin/ViewLeads.tsx"));
+const BlogPosts = lazy(() => import("./pages/admin/BlogPosts.tsx"));
+const CRMPipeline = lazy(() => import("./pages/admin/CRMPipeline.tsx"));
+const LeadDetail = lazy(() => import("./pages/admin/LeadDetail.tsx"));
+const TeamManagement = lazy(() => import("./pages/admin/TeamManagement.tsx"));
+const FollowUpReminders = lazy(() => import("./pages/admin/FollowUpReminders.tsx"));
+const AdminTracking = lazy(() => import("./pages/admin/Tracking.tsx"));
+const AdminSettings = lazy(() => import("./pages/admin/Settings.tsx"));
+const AdminNavLinks = lazy(() => import("./pages/admin/NavLinks.tsx"));
+const AdminFooterLinks = lazy(() => import("./pages/admin/FooterLinks.tsx"));
+const FileManager = lazy(() => import("./pages/admin/FileManager.tsx"));
+const Tasks = lazy(() => import("./pages/admin/Tasks.tsx"));
+const TaskProjects = lazy(() => import("./pages/admin/TaskProjects.tsx"));
+const ProjectDetail = lazy(() => import("./pages/admin/ProjectDetail.tsx"));
+const TaskDetail = lazy(() => import("./pages/admin/TaskDetail.tsx"));
+const Customers = lazy(() => import("./pages/admin/Customers.tsx"));
+const CustomerDetail = lazy(() => import("./pages/admin/CustomerDetail.tsx"));
+const Invoices = lazy(() => import("./pages/admin/billing/Invoices.tsx"));
+const InvoiceDetail = lazy(() => import("./pages/admin/billing/InvoiceDetail.tsx"));
+const Payments = lazy(() => import("./pages/admin/billing/Payments.tsx"));
+const BillingReports = lazy(() => import("./pages/admin/billing/Reports.tsx"));
+const MyAccount = lazy(() => import("./pages/admin/MyAccount.tsx"));
+const MyWorkspace = lazy(() => import("./pages/admin/MyWorkspace.tsx"));
+const AdminCaseStudies = lazy(() => import("./pages/admin/CaseStudies.tsx"));
+const AdminSocialPosts = lazy(() => import("./pages/admin/SocialPosts.tsx"));
+const AdminCityPages = lazy(() => import("./pages/admin/CityPages.tsx"));
 import CityPage from "./pages/CityPage.tsx";
 import LegalPage from "./pages/LegalPage.tsx";
-import TrustBadgesAdmin from "./pages/admin/TrustBadges.tsx";
-import LegalPagesAdmin from "./pages/admin/LegalPagesAdmin.tsx";
-import AdminVideoShowcase from "./pages/admin/VideoShowcase.tsx";
-import FormSubmissions from "./pages/admin/FormSubmissions.tsx";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      // Odoo-like behaviour: load once, keep cached, refresh only via the Sync button
-      // or after a mutation invalidates the relevant query.
-      staleTime: Infinity,
-      gcTime: Infinity,
-      retry: 2,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-    },
-  },
-});
+const TrustBadgesAdmin = lazy(() => import("./pages/admin/TrustBadges.tsx"));
+const LegalPagesAdmin = lazy(() => import("./pages/admin/LegalPagesAdmin.tsx"));
+const AdminVideoShowcase = lazy(() => import("./pages/admin/VideoShowcase.tsx"));
+const FormSubmissions = lazy(() => import("./pages/admin/FormSubmissions.tsx"));
 
 const AppErrorFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -84,15 +73,19 @@ const AppErrorFallback = () => (
   </div>
 );
 
-const App = () => (
+const App = ({ serverUrl, queryClient }: { serverUrl?: string; queryClient: QueryClient }) => {
+  const Router = serverUrl ? StaticRouter : BrowserRouter;
+  return (
   <ErrorBoundary fallback={<AppErrorFallback />}>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
+      <AuthProvider><MotionPolicy>
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <TrackingScripts />
-          <BrowserRouter>
+           <Router location={serverUrl}>
+           <PublicConsent />
+           <TrackingScripts />
+            <Suspense fallback={<div role="status" className="p-8">Loading…</div>}>
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
@@ -148,11 +141,13 @@ const App = () => (
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
-          </BrowserRouter>
+          </Suspense>
+           </Router>
         </TooltipProvider>
-      </AuthProvider>
+      </MotionPolicy></AuthProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 );
+};
 
 export default App;

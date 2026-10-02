@@ -44,7 +44,8 @@ export default function VideoShowcaseSection() {
   });
   const items = useMemo(() => ((data as any[]) || []).filter((i) => i.is_active) as VideoItem[], [data]);
 
-  const [quality, setQuality] = useState<Quality>(() => pickInitialQuality());
+  const [quality, setQuality] = useState<Quality>("source");
+  useEffect(() => setQuality(pickInitialQuality()), []);
   const [muted, setMuted] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);

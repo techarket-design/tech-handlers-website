@@ -1,5 +1,7 @@
+import { useLowMotion } from "@/components/motion/MotionPolicy";
+import InternationalDelivery from "@/components/InternationalDelivery";
 import { motion } from "framer-motion";
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, Target, Lightbulb, Users, Trophy, Globe, Rocket } from "lucide-react";
@@ -33,9 +35,10 @@ const team = [
 
 export default function About() {
   const rootRef = useRef<HTMLElement>(null);
+  const lowMotion = useLowMotion();
 
-  useLayoutEffect(() => {
-    if (typeof window === "undefined") return;
+  useEffect(() => {
+    if (typeof window === "undefined" || lowMotion) return;
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
       // Animated counters on the stats section
@@ -64,22 +67,22 @@ export default function About() {
       });
     }, rootRef);
     return () => ctx.revert();
-  }, []);
+  }, [lowMotion]);
 
   return (
     <>
       <SEOHead
         title="About Tech Handlers | Digital Marketing Agency India"
         description="Tech Handlers is a growing digital marketing and web development agency based in India. Meet our team and learn about our approach."
-        canonical="https://techhandlers.in/about"
+        canonical="https://www.techhandlers.in/about"
         jsonLd={[
           {
             "@context": "https://schema.org",
             "@type": "AboutPage",
             name: "About Tech Handlers",
-            url: "https://techhandlers.in/about",
+            url: "https://www.techhandlers.in/about",
             description: "Tech Handlers is a digital marketing and web development agency based in Delhi NCR.",
-            mainEntity: { "@id": "https://techhandlers.in/#organization" },
+            mainEntity: { "@id": "https://www.techhandlers.in/#organization" },
           },
           organizationSchema,
           breadcrumbSchema([
@@ -96,7 +99,7 @@ export default function About() {
             <div data-hero-blob className="absolute top-20 left-[20%] w-96 h-96 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.05), transparent 70%)" }} />
           </div>
           <div className="container mx-auto px-4 lg:px-8 relative z-10">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl mx-auto text-center">
+            <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-3xl mx-auto text-center">
               <span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4">About Us</span>
               <h1 className="text-4xl lg:text-6xl font-display font-bold text-foreground leading-[1.08] mb-6">
                 A <span className="text-primary">Passionate Team</span> Building Your Digital Presence
@@ -189,6 +192,7 @@ export default function About() {
           </div>
         </section>
       </main>
+      <InternationalDelivery />
       <Footer />
     </>
   );

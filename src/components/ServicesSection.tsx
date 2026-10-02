@@ -16,9 +16,9 @@ const iconMap: Record<string, any> = {
 };
 
 const fallbackServices = [
-  { icon_name: "Search", name: "SEO & Content Marketing", short_description: "Dominate Google rankings with technical SEO, content strategy, and local search optimization that drives organic traffic.", slug: "digital-marketing" },
+  { icon_name: "Search", name: "SEO & Content Marketing", short_description: "Dominate Google rankings with technical SEO, content strategy, and local search optimization that drives organic traffic.", slug: "seo" },
   { icon_name: "BarChart3", name: "Performance Marketing", short_description: "Data-driven Google Ads, Meta Ads, and LinkedIn campaigns engineered for maximum ROAS and qualified lead generation.", slug: "performance-marketing" },
-  { icon_name: "Share2", name: "Social Media Marketing", short_description: "Strategic social presence across Instagram, LinkedIn, and YouTube that builds brand equity and drives conversions.", slug: "digital-marketing" },
+  { icon_name: "Share2", name: "Social Media Marketing", short_description: "Strategic social presence across Instagram, LinkedIn, and YouTube that builds brand equity and drives conversions.", slug: "social-media-marketing" },
   { icon_name: "PenTool", name: "LinkedIn Automation", short_description: "Automated LinkedIn outreach, profile optimization, and lead generation to connect with decision-makers at scale.", slug: "linkedin-automation" },
   { icon_name: "Target", name: "Lead Generation", short_description: "Full-funnel lead generation systems with landing pages, nurture sequences, and CRM integration for predictable revenue.", slug: "performance-marketing" },
   { icon_name: "Globe", name: "Web Development", short_description: "High-converting, lightning-fast websites and web apps built with modern tech stacks, optimized for performance and conversions.", slug: "web-development" },
@@ -49,7 +49,7 @@ export default function ServicesSection() {
           <svg className="absolute inset-0 w-full h-full opacity-[0.015]">
             {Array.from({ length: 20 }).map((_, i) => (
               <motion.line key={`v-${i}`} x1={`${i * 5}%`} y1="0" x2={`${i * 5}%`} y2="100%"
-                stroke="currentColor" strokeWidth="1" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+                stroke="currentColor" strokeWidth="1" initial={false} whileInView={{ opacity: 1 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.02 }} />
             ))}
           </svg>
@@ -62,12 +62,12 @@ export default function ServicesSection() {
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="text-center mb-16 lg:mb-20">
           <motion.span className="inline-block text-xs font-bold text-primary uppercase tracking-[0.2em] mb-4"
-            initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             What We Do
           </motion.span>
           <AnimatedHeading as="h2" text={heading} className="text-3xl lg:text-5xl font-display font-bold text-lead mb-4" />
           <motion.p className="text-muted-foreground max-w-lg mx-auto"
-            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
+            initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
             {subheading}
           </motion.p>
         </div>
@@ -77,12 +77,12 @@ export default function ServicesSection() {
             const IconComp = iconMap[s.icon_name || "Settings"] || Settings;
             const gradient = gradients[i % gradients.length];
             return (
-              <motion.div key={s.id || i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+              <motion.div key={s.id || i} initial={false} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 style={{ marginTop: !isMobile && typeof window !== 'undefined' && window.innerWidth >= 1024 ? `${offsets[i % offsets.length]}px` : 0 }}
                 className="group">
-                <Link to={s.slug ? `/services/${s.slug}` : "#"}>
+                <Link to={`/services/${s.name?.startsWith("SEO") ? "seo" : s.name === "Social Media Marketing" ? "social-media-marketing" : s.slug || "digital-marketing"}`}>
                 <motion.div className="bg-surface-white rounded-2xl p-6 lg:p-8 border border-border/70 h-full flex flex-col relative overflow-hidden"
                   whileHover={!isMobile ? { y: -6, boxShadow: "0 25px 80px -15px hsl(239 84% 67% / 0.12)" } : undefined}
                   transition={{ type: "spring", stiffness: 300, damping: 25 }}>

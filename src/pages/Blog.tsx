@@ -27,19 +27,19 @@ export default function Blog() {
   return (
     <>
       <SEOHead
-        title="Blog | Tech Handlers — Digital Marketing Insights Delhi NCR"
-        description="Expert insights on digital marketing, SEO, social media, and web development from Tech Handlers, a leading agency in Delhi NCR, Gurgaon & Noida."
-        canonical="https://techhandlers.in/blog"
+        title="Blog | Tech Handlers — Digital Marketing & Web Development Insights"
+        description="Practical insights on SEO, digital marketing and web development from Tech Handlers. Plan your growth, improve measurement and build a stronger online presence."
+        canonical="https://www.techhandlers.in/blog"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "Blog",
           name: "Tech Handlers Blog",
-          description: "Digital marketing insights and strategies for businesses in Delhi NCR",
-          url: "https://techhandlers.in/blog",
+          description: "Digital marketing insights and strategies for growing businesses",
+          url: "https://www.techhandlers.in/blog",
           publisher: {
             "@type": "Organization",
             name: "Tech Handlers",
-            url: "https://techhandlers.in",
+            url: "https://www.techhandlers.in",
           },
         }}
       />
@@ -52,7 +52,7 @@ export default function Blog() {
               Digital Marketing Insights
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Expert strategies, case studies, and tips from Delhi NCR's leading digital marketing agency.
+              Practical strategies, case studies and guidance for businesses building their digital presence.
             </p>
           </GsapReveal>
 
