@@ -56,3 +56,11 @@ For local preview, configure a staging database and `MCP_PUBLIC_ORIGIN=http://12
 Production acceptance: complete one Gemini linking flow, save a labeled draft, approve publication, verify article metadata/body and sitemap after the existing cache window, disconnect from TH, and confirm Gemini's subsequent tool call is denied. Live connection compatibility and CDN behavior remain unverified until these checks pass.
 
 Local verification on 2 October 2026: all 13 server tests passed, including an official MCP client over a real local HTTP connection; TypeScript and focused lint checks passed; the production client/server build and output verification passed. The connection page renders correctly while signed out and links to the existing admin login. No production migration, deployment or blog write has been performed.
+
+## Vercel startup compatibility
+
+If Vercel reports `ERR_REQUIRE_ESM` for `sanitize-html` requiring `htmlparser2`, deploy the compatibility fix in this repository. The build now bundles the current sanitizer and parser together into `dist-server/blog-sanitizer.cjs`, and both publishing functions explicitly include that artifact. Do not downgrade the sanitizer or change database settings to work around this startup crash.
+
+Push all changed files, including `scripts/build-blog-sanitizer.mjs`, `package.json`, `package-lock.json`, `server/blog-mcp.mjs`, `scripts/verify-build.mjs` and `vercel.json`. Deploy that new Git commit using `npm run build`; rebuilding an older commit will not include the fix. The build log must contain `Blog sanitizer and parser bundled for the server runtime.`
+
+An unauthenticated browser visit to `/api/mcp` should return HTTP 401 with `Authentication required` and OAuth discovery headers. It is a machine endpoint, not an HTML page. `/.well-known/oauth-authorization-server` should return metadata JSON. A regression test starts both functions with Node's `require(ESM)` support disabled, reproducing the runtime restriction that caused the original failure.

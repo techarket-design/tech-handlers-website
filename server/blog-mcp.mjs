@@ -1,5 +1,5 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
-import sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from '../dist-server/blog-sanitizer.cjs';
 import { z } from 'zod';
 
 export class PublisherError extends Error {

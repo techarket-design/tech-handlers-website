@@ -2,6 +2,12 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
+    "api/mcp.mjs": {
+      "includeFiles": "dist-server/blog-sanitizer.cjs"
+    },
+    "api/blog-oauth.mjs": {
+      "includeFiles": "dist-server/blog-sanitizer.cjs"
+    },
     "api/render.mjs": {
       "includeFiles": "dist-server/**",
       "maxDuration": 30
