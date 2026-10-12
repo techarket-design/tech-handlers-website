@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useSubmitLead } from "@/hooks/useData";
+import { useAntiSpam } from "@/hooks/useAntiSpam";
 import { toast } from "sonner";
 
 interface ServiceCTAProps {
@@ -16,22 +17,54 @@ interface ServiceCTAProps {
 
 export default function ServiceCTA({ heading, description, buttonText, service }: ServiceCTAProps) {
   const submitLead = useSubmitLead();
+  const antiSpam = useAntiSpam();
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.email) { toast.error("Please fill in name and email"); return; }
+
+    const check = antiSpam.validateSubmission({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      message: form.message,
+      service_interest: service,
+    });
+
+    if (!check.valid) {
+      toast.error(check.userError || "Please check your inputs");
+      return;
+    }
+
+    if (check.isBot) {
+      // Shadow-drop: fake success to deter bot retries
+      console.warn("[AntiSpam] Service CTA lead dropped silently:", check.botReason);
+      setSubmitted(true);
+      toast.success("We'll get back to you within 24 hours!");
+      antiSpam.resetTurnstile();
+      return;
+    }
+
     try {
+      antiSpam.recordSubmission();
       await submitLead.mutateAsync({
-        name: form.name, email: form.email, phone: form.phone || null,
-        message: form.message || null, service_interest: service,
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim() || null,
+        message: form.message.trim() || null,
+        service_interest: service,
         source: `service-page-${service.toLowerCase().replace(/\s+/g, "-")}`,
-        company: null, website_url: null, budget: null,
+        company: null,
+        website_url: null,
+        budget: null,
       });
       setSubmitted(true);
       toast.success("We'll get back to you within 24 hours!");
-    } catch { toast.error("Something went wrong. Please try again."); }
+      antiSpam.resetTurnstile();
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -51,8 +84,17 @@ export default function ServiceCTA({ heading, description, buttonText, service }
             <p className="text-background/60">Our team will reach out within 24 hours with a custom strategy for your business.</p>
           </motion.div>
         ) : (
-          <motion.form onSubmit={handleSubmit} initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="bg-background/5 backdrop-blur-sm rounded-2xl border border-background/10 p-6 lg:p-8 max-w-2xl mx-auto">
+          <motion.form
+            onSubmit={handleSubmit}
+            onFocusCapture={antiSpam.registerInteraction}
+            onPointerDownCapture={antiSpam.registerInteraction}
+            onKeyDownCapture={antiSpam.registerInteraction}
+            initial={false}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-background/5 backdrop-blur-sm rounded-2xl border border-background/10 p-6 lg:p-8 max-w-2xl mx-auto"
+          >
+            <antiSpam.HoneypotFields />
             <div className="grid sm:grid-cols-2 gap-4 mb-4">
               <Input placeholder="Your Name *" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
                 className="bg-background/10 border-background/20 text-background placeholder:text-background/40" />
@@ -63,6 +105,7 @@ export default function ServiceCTA({ heading, description, buttonText, service }
               className="bg-background/10 border-background/20 text-background placeholder:text-background/40 mb-4" />
             <Textarea placeholder="Tell us about your project..." value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
               className="bg-background/10 border-background/20 text-background placeholder:text-background/40 mb-4 min-h-[80px]" />
+            <antiSpam.TurnstileField theme="dark" />
             <Button type="submit" size="lg" className="w-full gradient-primary-accent text-primary-foreground font-semibold shadow-xl h-12"
               disabled={submitLead.isPending}>
               {submitLead.isPending ? "Submitting..." : buttonText} <ArrowRight className="ml-2 h-4 w-4" />

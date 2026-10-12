@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist-server/
+.swc-cache/
 *.local
 
 # Editor directories and files
@@ -22,11 +24,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment & Secrets
 .env
-
-
-dist-server/
-.swc-cache/
-
-.env.local
-.env.*.local
+.env.*
+!.env.example
+server/.env
+upload_media.mjs
+supabase/.temp/

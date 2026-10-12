@@ -259,7 +259,12 @@ export const useSubmitLead = () => {
       const response = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...lead, request_id: pendingRef.current.id, attribution: captureAttribution() }),
+        body: JSON.stringify({
+          ...lead,
+          request_id: pendingRef.current.id,
+          attribution: captureAttribution(),
+          _gotcha: "", // Honeypot protection
+        }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Unable to submit inquiry");

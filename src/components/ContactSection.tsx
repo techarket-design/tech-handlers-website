@@ -10,6 +10,7 @@ import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { AnimatedHeading, RevealOnScroll } from "./motion/AnimationUtils";
 import { useSiteSettings, useSubmitLead } from "@/hooks/useData";
+import { useAntiSpam } from "@/hooks/useAntiSpam";
 
 const serviceOptions = [
   "Digital Marketing",
@@ -35,6 +36,7 @@ export default function ContactSection() {
   const [message, setMessage] = useState("");
   const { data: settings } = useSiteSettings();
   const submitLead = useSubmitLead();
+  const antiSpam = useAntiSpam();
 
 
 
@@ -59,11 +61,33 @@ export default function ContactSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) {
-      toast.error("Please fill in your name and email");
+
+    const check = antiSpam.validateSubmission({
+      name,
+      email,
+      phone,
+      company,
+      website_url: website,
+      message,
+    });
+
+    if (!check.valid) {
+      toast.error(check.userError || "Please check your inputs");
       return;
     }
+
+    if (check.isBot) {
+      // Shadow-drop: fake success to deceive the bot without inserting to DB or emailing
+      console.warn("[AntiSpam] Contact form lead dropped silently:", check.botReason);
+      toast.success("Thanks! We'll reach out within 24 hours.");
+      setName(""); setEmail(""); setPhone(""); setCompany("");
+      setWebsite(""); setService(""); setBudget([200000]); setMessage("");
+      antiSpam.resetTurnstile();
+      return;
+    }
+
     try {
+      antiSpam.recordSubmission();
       await submitLead.mutateAsync({
         name: name.trim(),
         email: email.trim(),
@@ -78,6 +102,7 @@ export default function ContactSection() {
       toast.success("Thanks! We'll reach out within 24 hours.");
       setName(""); setEmail(""); setPhone(""); setCompany("");
       setWebsite(""); setService(""); setBudget(""); setMarket(""); setMessage("");
+      antiSpam.resetTurnstile();
     } catch {
       toast.error("Unable to save your enquiry. Please try again or email us directly.");
     }
@@ -151,11 +176,17 @@ export default function ContactSection() {
 
           <motion.div initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}>
-            <motion.div className="glass-card rounded-2xl p-6 lg:p-8 glow-primary"
-              whileHover={{ boxShadow: "0 25px 80px -15px hsl(239 84% 67% / 0.15)" }} transition={{ duration: 0.4 }}>
+            <motion.div className="glass-card rounded-2xl p-6 lg:p-8 glow-primary">
               <h3 className="font-display text-xl font-bold text-lead mb-1">{formHeading}</h3>
               <p className="text-sm text-muted-foreground mb-6">Fill in your details and we'll get back to you within 24 hours.</p>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form
+                onSubmit={handleSubmit}
+                onFocusCapture={antiSpam.registerInteraction}
+                onPointerDownCapture={antiSpam.registerInteraction}
+                onKeyDownCapture={antiSpam.registerInteraction}
+                className="space-y-4"
+              >
+                <antiSpam.HoneypotFields />
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div>
                     <Label htmlFor="c-name" className="text-sm font-medium text-lead">Name *</Label>
@@ -210,6 +241,7 @@ export default function ContactSection() {
                   <Label htmlFor="c-message" className="text-sm font-medium text-lead">Requirements / Message</Label>
                   <Textarea id="c-message" placeholder="Tell us about your project and goals..." value={message} onChange={(e) => setMessage(e.target.value)} rows={3} className="mt-1.5 resize-none" />
                 </div>
+                <antiSpam.TurnstileField />
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button type="submit" className="w-full gradient-primary-accent text-primary-foreground font-semibold shadow-xl h-12 text-base" size="lg"
                     disabled={submitLead.isPending}>

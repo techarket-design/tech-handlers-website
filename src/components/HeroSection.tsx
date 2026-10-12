@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSiteSettings, useSubmitLead } from "@/hooks/useData";
+import { useAntiSpam } from "@/hooks/useAntiSpam";
 import { toast } from "sonner";
 import HeroProjectPrism from "./HeroProjectPrism";
 
@@ -70,6 +71,7 @@ export default function HeroSection() {
 
   const { data: settings } = useSiteSettings();
   const submitLead = useSubmitLead();
+  const antiSpam = useAntiSpam();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -85,10 +87,30 @@ export default function HeroSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) {
-      toast.error("Please fill in your name and email");
+
+    const check = antiSpam.validateSubmission({
+      name,
+      email,
+      phone,
+      message,
+      service_interest: service,
+    });
+
+    if (!check.valid) {
+      toast.error(check.userError || "Please check your inputs");
       return;
     }
+
+    if (check.isBot) {
+      // Shadow-drop: fake success to deter bot retries without saving to DB or sending email
+      console.warn("[AntiSpam] Hero form lead dropped silently:", check.botReason);
+      toast.success("Thanks! We'll get back to you within 24 hours.");
+      setName(""); setEmail(""); setPhone(""); setService(""); setMessage("");
+      antiSpam.resetTurnstile();
+      return;
+    }
+
+    antiSpam.recordSubmission();
     submitLead.mutate(
       {
         name: name.trim(),
@@ -102,6 +124,7 @@ export default function HeroSection() {
         onSuccess: () => {
           toast.success("Thanks! We'll get back to you within 24 hours.");
           setName(""); setEmail(""); setPhone(""); setService(""); setMessage("");
+          antiSpam.resetTurnstile();
         },
         onError: () => toast.error("Something went wrong. Please try again."),
       }
@@ -208,9 +231,17 @@ export default function HeroSection() {
               transition={{ duration: 1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}>
               <HeroProjectPrism />
               {/* Inquiry Form */}
-              <motion.form onSubmit={handleSubmit}
+              <motion.form
+                onSubmit={handleSubmit}
+                onFocusCapture={antiSpam.registerInteraction}
+                onPointerDownCapture={antiSpam.registerInteraction}
+                onKeyDownCapture={antiSpam.registerInteraction}
                 className="hero-enquiry bg-card border border-border rounded-2xl p-5 sm:p-7 space-y-4 w-full shadow-lg"
-                initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.6 }}>
+                initial={false}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45, duration: 0.6 }}
+              >
+                <antiSpam.HoneypotFields />
                 <h2 className="font-display font-semibold text-foreground text-lg">Tell us what you want to achieve</h2>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground -mt-2">
                   <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-primary" /> No spam, ever</span>
@@ -235,6 +266,7 @@ export default function HeroSection() {
                   </Select>
                 </div>
                 <Textarea placeholder="Tell us about your requirements..." value={message} onChange={(e) => setMessage(e.target.value)} rows={3} className="resize-none" />
+                <antiSpam.TurnstileField />
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button type="submit" size="lg" disabled={submitLead.isPending}
                     className="w-full gradient-primary-accent text-primary-foreground font-semibold shadow-xl h-12 text-base">
