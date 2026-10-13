@@ -1,4 +1,4 @@
-import { database, deliverNotifications, LeadError, rateKey, validateLead } from "../server/leads.mjs";
+import { database, deliverNotifications, isDisposableEmail, LeadError, rateKey, validateLead } from "../server/leads.mjs";
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "POST") { res.setHeader("Allow", "POST"); return res.status(405).json({ error: "Method not allowed" }); }
@@ -9,6 +9,16 @@ export default async function handler(req, res) {
   if (origin && !allowed.has(origin)) return res.status(403).json({ error: "Invalid origin" });
   try {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    // Anti-bot shadow-drop: silently drop automated bots without inserting or emailing
+    if (
+      body?.hp_company_website ||
+      body?.hp_secondary_phone ||
+      (body?._gotcha && body?._gotcha !== "") ||
+      /(?:https?:\/\/|www\.|<[^>]+>)/i.test(body?.name || "") ||
+      isDisposableEmail(body?.email || "")
+    ) {
+      return res.status(200).json({ id: "dropped", notification: "skipped" });
+    }
     const lead = validateLead(body);
     const result = await database("rpc/submit_website_lead", { body: { p_lead: lead, p_rate_key: rateKey(req) } });
     // Saving and queuing are atomic. Email delivery failure never loses the enquiry.

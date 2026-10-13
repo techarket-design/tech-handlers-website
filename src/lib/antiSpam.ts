@@ -18,6 +18,27 @@ export interface SpamCheckResult {
   botReason?: string;
 }
 
+export const DISPOSABLE_EMAIL_DOMAINS = new Set([
+  "mailinator.com", "guerrillamail.com", "guerrillamailblock.com", "tempmail.com", "10minutemail.com",
+  "yopmail.com", "trashmail.com", "trashmail.net", "trashmail.me", "throwawaymail.com",
+  "sharklasers.com", "getairmail.com", "dispostable.com", "dropmail.me", "mohmal.im",
+  "temp-mail.org", "fakeinbox.com", "generator.email", "crazymailing.com", "burnermail.io",
+  "maildrop.cc", "inboxkitten.com", "nada.ltd", "tempail.com", "fakemailgenerator.com",
+  "emailondeck.com", "mytemp.email", "tempmailo.com", "inboxbear.com", "discard.email",
+  "mailnull.com", "mytempmail.com", "spambog.com", "tempinbox.com", "crazymail.com",
+  "spamfree24.org", "trash-mail.com", "throwaway.email", "armyspy.com", "cuvox.de",
+  "dayrep.com", "einrot.com", "fleckens.hu", "gustr.com", "jourrapide.com",
+  "rhyta.com", "superrito.com", "teleworm.us", "tinypm.com", "mailnesia.com"
+]);
+
+export function isDisposableEmail(email: string): boolean {
+  if (!email || typeof email !== "string") return false;
+  const parts = email.trim().toLowerCase().split("@");
+  if (parts.length !== 2) return false;
+  const domain = parts[1];
+  return DISPOSABLE_EMAIL_DOMAINS.has(domain) || Array.from(DISPOSABLE_EMAIL_DOMAINS).some(d => domain.endsWith("." + d));
+}
+
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
 export function isValidEmail(email: string): boolean {
@@ -33,6 +54,9 @@ export function isValidEmail(email: string): boolean {
   const domainParts = domain.split(".");
   const tld = domainParts[domainParts.length - 1];
   if (!tld || tld.length < 2 || !/^[a-zA-Z]+$/.test(tld)) return false;
+
+  // Must not be a disposable/burner email domain
+  if (isDisposableEmail(trimmed)) return false;
 
   return true;
 }

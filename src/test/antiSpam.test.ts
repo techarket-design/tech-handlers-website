@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isValidEmail, isValidPhone, detectSpamPatterns } from "@/lib/antiSpam";
+import { isValidEmail, isDisposableEmail, isValidPhone, detectSpamPatterns } from "@/lib/antiSpam";
 
 describe("Anti-Spam Filter Tests", () => {
   describe("Email Validation", () => {
@@ -15,6 +15,19 @@ describe("Anti-Spam Filter Tests", () => {
       expect(isValidEmail("test@test")).toBe(false); // No TLD
       expect(isValidEmail("abc@.com")).toBe(false);
       expect(isValidEmail("spam bot@mail.com")).toBe(false);
+    });
+
+    it("rejects disposable and burner bot email domains", () => {
+      expect(isDisposableEmail("bot123@mailinator.com")).toBe(true);
+      expect(isDisposableEmail("spammer@tempmail.com")).toBe(true);
+      expect(isDisposableEmail("fake@10minutemail.com")).toBe(true);
+      expect(isDisposableEmail("test@guerrillamail.com")).toBe(true);
+      expect(isDisposableEmail("legit@gmail.com")).toBe(false);
+      expect(isDisposableEmail("founder@techhandlers.in")).toBe(false);
+
+      // isValidEmail must also reject them
+      expect(isValidEmail("bot@mailinator.com")).toBe(false);
+      expect(isValidEmail("scam@tempmail.com")).toBe(false);
     });
   });
 

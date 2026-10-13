@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import {
   isValidEmail,
+  isDisposableEmail,
   isValidPhone,
   detectSpamPatterns,
   checkRateLimit,
@@ -117,6 +118,14 @@ export function useAntiSpam() {
           valid: false,
           isBot: false,
           userError: "Please enter your name",
+        };
+      }
+
+      if (isDisposableEmail(data.email)) {
+        return {
+          valid: false,
+          isBot: false,
+          userError: "Please enter a valid corporate or personal email address (temporary domains are not accepted)",
         };
       }
 

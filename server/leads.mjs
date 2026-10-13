@@ -1,6 +1,25 @@
 import { createHmac } from "node:crypto";
 export class LeadError extends Error { constructor(status, message) { super(message); this.status = status; } }
 const SOURCES = new Set(["website", "hero_form", "contact_form", "service_form", "city_page_form"]);
+export const DISPOSABLE_EMAIL_DOMAINS = new Set([
+  "mailinator.com", "guerrillamail.com", "guerrillamailblock.com", "tempmail.com", "10minutemail.com",
+  "yopmail.com", "trashmail.com", "trashmail.net", "trashmail.me", "throwawaymail.com",
+  "sharklasers.com", "getairmail.com", "dispostable.com", "dropmail.me", "mohmal.im",
+  "temp-mail.org", "fakeinbox.com", "generator.email", "crazymailing.com", "burnermail.io",
+  "maildrop.cc", "inboxkitten.com", "nada.ltd", "tempail.com", "fakemailgenerator.com",
+  "emailondeck.com", "mytemp.email", "tempmailo.com", "inboxbear.com", "discard.email",
+  "mailnull.com", "mytempmail.com", "spambog.com", "tempinbox.com", "crazymail.com",
+  "spamfree24.org", "trash-mail.com", "throwaway.email", "armyspy.com", "cuvox.de",
+  "dayrep.com", "einrot.com", "fleckens.hu", "gustr.com", "jourrapide.com",
+  "rhyta.com", "superrito.com", "teleworm.us", "tinypm.com", "mailnesia.com"
+]);
+export function isDisposableEmail(email) {
+  if (!email || typeof email !== "string") return false;
+  const parts = email.trim().toLowerCase().split("@");
+  if (parts.length !== 2) return false;
+  const domain = parts[1];
+  return DISPOSABLE_EMAIL_DOMAINS.has(domain) || Array.from(DISPOSABLE_EMAIL_DOMAINS).some(d => domain.endsWith("." + d));
+}
 const text = (value, max) => typeof value === "string" ? value.trim().slice(0, max) : null;
 function touch(value) {
   if (!value || typeof value !== "object") return undefined;
@@ -16,6 +35,7 @@ export function validateLead(body) {
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(body.request_id || "")) throw new LeadError(400, "Invalid submission ID");
   const name = text(body.name, 120), email = text(body.email, 254)?.toLowerCase();
   if (!name || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new LeadError(400, "Enter your name and a valid email address");
+  if (isDisposableEmail(email)) throw new LeadError(400, "Please provide a valid corporate or personal email address (temporary domains are not accepted)");
   if (body.website_url) { try { const url = new URL(body.website_url); if (!["http:", "https:"].includes(url.protocol)) throw new Error(); } catch { throw new LeadError(400, "Enter a full website URL, such as https://example.com"); } }
   const attribution = {};
   const input = body.attribution || {};
