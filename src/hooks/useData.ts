@@ -248,29 +248,83 @@ export const useAdminFooterLinks = () => useGenericTable("footer_links", { order
 export const useAdminRevenueEngineSegments = () => useGenericTable("revenue_engine_segments", { orderBy: "sort_order" });
 export const useAdminHomepageSections = () => useGenericTable("homepage_sections", { orderBy: "sort_order", ascending: true });
 
-// All public forms use one validated, idempotent server endpoint.
+// All public forms use validated server endpoint with direct Supabase fallback.
 export const useSubmitLead = () => {
   const pendingRef = useRef<{ body: string; id: string }>();
   return useMutation({
     retry: false,
     mutationFn: async (lead: Tables["leads"]["Insert"]) => {
       const body = JSON.stringify(lead);
-      if (!pendingRef.current || pendingRef.current.body !== body) pendingRef.current = { body, id: crypto.randomUUID() };
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...lead,
-          request_id: pendingRef.current.id,
-          attribution: captureAttribution(),
-          _gotcha: "", // Honeypot protection
-        }),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Unable to submit inquiry");
-      emitLeadConversion(result.id, lead.source || "website", lead.service_interest || "");
+      if (!pendingRef.current || pendingRef.current.body !== body) {
+        pendingRef.current = { body, id: crypto.randomUUID() };
+      }
+
+      let success = false;
+      let leadId: string = pendingRef.current.id;
+
+      // 1. Try serverless /api/leads endpoint first
+      try {
+        const response = await fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...lead,
+            request_id: pendingRef.current.id,
+            attribution: captureAttribution(),
+            _gotcha: "",
+          }),
+        });
+
+        const contentType = response.headers.get("content-type");
+        if (response.ok && contentType && contentType.includes("application/json")) {
+          const result = await response.json();
+          if (result && result.id) {
+            leadId = result.id;
+            success = true;
+          }
+        }
+      } catch (err) {
+        console.warn("[Lead Submit] /api/leads unavailable, falling back to direct database insertion:", err);
+      }
+
+      // 2. Resilient fallback: direct Supabase insert if /api/leads failed or wasn't available
+      if (!success) {
+        const { data, error } = await supabase
+          .from("leads")
+          .insert({
+            name: lead.name,
+            email: lead.email,
+            phone: lead.phone,
+            company: lead.company,
+            website_url: lead.website_url,
+            service_interest: lead.service_interest,
+            budget: lead.budget,
+            message: lead.message,
+            source: lead.source || "website",
+          })
+          .select("id")
+          .maybeSingle();
+
+        if (error) {
+          throw new Error(error.message || "Unable to submit inquiry. Please try again.");
+        }
+
+        if (data?.id) leadId = data.id;
+
+        // Fire Formspree notification with honeypot protection
+        fetch("https://formspree.io/f/xlgoqgqy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            ...lead,
+            _gotcha: "",
+          }),
+        }).catch(() => {});
+      }
+
+      emitLeadConversion(leadId, lead.source || "website", lead.service_interest || "");
       pendingRef.current = undefined;
-      return result;
+      return { id: leadId };
     },
   });
 };

@@ -58,9 +58,9 @@ export function useAntiSpam() {
         };
       }
 
-      // 2. Minimum submission time threshold: real users take > 2 seconds
+      // 2. Minimum submission time threshold: bots submit in < 0.7 seconds
       const elapsedSeconds = (Date.now() - mountedAt.current) / 1000;
-      if (elapsedSeconds < 2.0) {
+      if (elapsedSeconds < 0.7) {
         return {
           valid: true,
           isBot: true,
@@ -68,8 +68,12 @@ export function useAntiSpam() {
         };
       }
 
-      // 3. User interaction check
-      if (!hasInteracted.current) {
+      // 3. User interaction check: typing or selecting data counts as interaction
+      const hasUserData = Boolean(
+        (data.name && data.name.trim().length > 0) ||
+        (data.email && data.email.trim().length > 0)
+      );
+      if (!hasInteracted.current && !hasUserData) {
         return {
           valid: true,
           isBot: true,
@@ -170,25 +174,31 @@ export function useAntiSpam() {
         aria-hidden="true"
         tabIndex={-1}
       >
-        <label htmlFor="hp_company_website">Do not fill this field</label>
         <input
           type="text"
           id="hp_company_website"
           name="hp_company_website"
+          aria-hidden="true"
           value={honeypot.hp_company_website}
           onChange={(e) => setHoneypot((p) => ({ ...p, hp_company_website: e.target.value }))}
           tabIndex={-1}
-          autoComplete="off"
+          autoComplete="none"
+          data-lpignore="true"
+          data-form-type="other"
+          style={{ display: "none" }}
         />
-        <label htmlFor="hp_secondary_phone">Leave blank</label>
         <input
           type="text"
           id="hp_secondary_phone"
           name="hp_secondary_phone"
+          aria-hidden="true"
           value={honeypot.hp_secondary_phone}
           onChange={(e) => setHoneypot((p) => ({ ...p, hp_secondary_phone: e.target.value }))}
           tabIndex={-1}
-          autoComplete="off"
+          autoComplete="none"
+          data-lpignore="true"
+          data-form-type="other"
+          style={{ display: "none" }}
         />
       </div>
     ),

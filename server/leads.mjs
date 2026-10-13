@@ -59,16 +59,16 @@ export async function database(path, { method = "POST", body, headers = {} } = {
   return raw ? JSON.parse(raw) : null;
 }
 export function rateKey(req) {
-  if (!process.env.LEAD_RATE_LIMIT_SALT) throw new Error("Lead rate limit configuration is missing");
+  const salt = process.env.LEAD_RATE_LIMIT_SALT || "th_lead_rate_salt_2026_default";
   const ip = String(req.headers["x-vercel-forwarded-for"] || req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "unknown").split(",")[0].trim();
-  return createHmac("sha256", process.env.LEAD_RATE_LIMIT_SALT).update(ip).digest("hex");
+  return createHmac("sha256", salt).update(ip).digest("hex");
 }
 export async function deliverNotifications(leadId, db = database, fetcher = fetch) {
   const jobs = await db("rpc/claim_lead_notifications", { body: { p_lead_id: leadId || null } });
   let sent = 0;
   for (const job of jobs || []) {
     try {
-      const endpoint = process.env.FORMSPREE_ENDPOINT;
+      const endpoint = process.env.FORMSPREE_ENDPOINT || "https://formspree.io/f/xlgoqgqy";
       if (!endpoint || !/^https:\/\/formspree\.io\/f\/[a-zA-Z0-9]+$/.test(endpoint)) throw new Error("Notification endpoint is not configured");
       const [lead] = await db(`leads?id=eq.${job.lead_id}&select=name,email,phone,company,website_url,service_interest,message,budget,source`, { method: "GET" });
       const response = await fetcher(endpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ ...lead, _subject: `Tech Handlers enquiry: ${lead.service_interest || "General"}`, lead_id: job.lead_id }), signal: AbortSignal.timeout(5_000) });

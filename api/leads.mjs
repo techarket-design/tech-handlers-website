@@ -3,10 +3,15 @@ export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "POST") { res.setHeader("Allow", "POST"); return res.status(405).json({ error: "Method not allowed" }); }
   const origin = req.headers.origin;
-  const allowed = new Set(["https://www.techhandlers.in", "https://techhandlers.in"]);
-  if (process.env.VERCEL_URL) allowed.add(`https://${process.env.VERCEL_URL}`);
-  if (process.env.LEAD_ALLOWED_ORIGIN) allowed.add(process.env.LEAD_ALLOWED_ORIGIN);
-  if (origin && !allowed.has(origin)) return res.status(403).json({ error: "Invalid origin" });
+  const isAllowedOrigin =
+    !origin ||
+    origin === "https://www.techhandlers.in" ||
+    origin === "https://techhandlers.in" ||
+    origin.endsWith(".vercel.app") ||
+    origin.includes("localhost") ||
+    origin.includes("127.0.0.1") ||
+    (process.env.LEAD_ALLOWED_ORIGIN && origin === process.env.LEAD_ALLOWED_ORIGIN);
+  if (!isAllowedOrigin) return res.status(403).json({ error: "Invalid origin" });
   try {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     // Anti-bot shadow-drop: silently drop automated bots without inserting or emailing

@@ -35,16 +35,12 @@ interface TurnstileWidgetProps {
   theme?: "light" | "dark" | "auto";
 }
 
-// Cloudflare official Always-Pass test key for development/staging when no custom key is configured
-const DEFAULT_TEST_SITE_KEY = "1x00000000000000000000AA";
-
 export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, TurnstileWidgetProps>(
   ({ onSuccess, onError, onExpire, action = "lead_submission", className = "", theme = "auto" }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
 
-    const siteKey =
-      (import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined)?.trim() || DEFAULT_TEST_SITE_KEY;
+    const siteKey = (import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined)?.trim();
 
     useImperativeHandle(ref, () => ({
       reset: () => {
@@ -59,6 +55,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, TurnstileWidget
     }));
 
     useEffect(() => {
+      if (!siteKey) return;
       let isMounted = true;
 
       const renderWidget = () => {
@@ -135,6 +132,8 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, TurnstileWidget
         }
       };
     }, [siteKey, action, theme, onSuccess, onError, onExpire]);
+
+    if (!siteKey) return null;
 
     return (
       <div className={`flex justify-center my-2 ${className}`}>
